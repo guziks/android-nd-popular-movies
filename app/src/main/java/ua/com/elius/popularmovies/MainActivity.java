@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -12,6 +16,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PosterAdapter<Integer> adapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
+        adapter.add(R.drawable.sample_0);
+        adapter.add(R.drawable.sample_1);
+        adapter.add(R.drawable.sample_2);
+        adapter.add(R.drawable.sample_3);
+        adapter.add(R.drawable.sample_4);
+        adapter.add(R.drawable.sample_5);
+        adapter.add(R.drawable.sample_6);
+        adapter.add(R.drawable.sample_7);
+
+        GridView gridview = (GridView) findViewById(R.id.poster_grid);
+        gridview.setAdapter(adapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Toast.makeText(MainActivity.this, "" + position,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
