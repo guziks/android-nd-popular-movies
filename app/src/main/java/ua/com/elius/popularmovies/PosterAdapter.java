@@ -8,7 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 public class PosterAdapter<T> extends ArrayAdapter<T> {
+
+    String LOG_TAG = PosterAdapter.class.getSimpleName();
 
     private int mResource;
     private int mFieldId = 0;
@@ -47,7 +51,25 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
         }
 
         T item = getItem(position);
-        image.setImageResource(Integer.parseInt(item.toString()));
+//        if (item instanceof Integer) {
+//            image.setImageResource(Integer.parseInt(item.toString()));
+//        } else {
+//            Picasso.with(getContext()).load(item.toString()).into(image);
+//        }
+        Log.d(LOG_TAG, "Item.toString(): " + item.toString());
+//        Picasso picasso = new Picasso.Builder(getContext())
+//                .loggingEnabled(true)
+//                .indicatorsEnabled(true)
+//                .build();
+//        picasso.load(item.toString())
+//                    .placeholder(R.drawable.sample_0)
+//                    .error(R.drawable.sample_1)
+//                    .into(image);
+        Glide.with(getContext())
+                .load(item.toString())
+                .placeholder(R.drawable.sample_0)
+                .error(R.drawable.sample_1)
+                .into(image);
 
         return view;
     }
