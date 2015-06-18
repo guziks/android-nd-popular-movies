@@ -60,10 +60,8 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
             image.setImageResource((Integer) item);
         } else {
             Glide.with(getContext())
-                .load(item.toString())
-                .placeholder(R.drawable.sample_0)
-                .error(R.drawable.sample_1)
-                .into(image);
+                    .load(item.toString())
+                    .into(image);
         }
 
         return view;
