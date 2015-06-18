@@ -45,31 +45,21 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
                 image = (ImageView) view.findViewById(mFieldId);
             }
         } catch (ClassCastException e) {
-            Log.e("PosterAdapter", "You must supply a resource ID for a ImageView");
+            Log.e("PosterAdapter", "You must supply a resource ID for an ImageView");
             throw new IllegalStateException(
-                    "PosterAdapter requires the resource ID to be a ImageView", e);
+                    "PosterAdapter requires the resource ID to be an ImageView", e);
         }
 
         T item = getItem(position);
-//        if (item instanceof Integer) {
-//            image.setImageResource(Integer.parseInt(item.toString()));
-//        } else {
-//            Picasso.with(getContext()).load(item.toString()).into(image);
-//        }
-        Log.d(LOG_TAG, "Item.toString(): " + item.toString());
-//        Picasso picasso = new Picasso.Builder(getContext())
-//                .loggingEnabled(true)
-//                .indicatorsEnabled(true)
-//                .build();
-//        picasso.load(item.toString())
-//                    .placeholder(R.drawable.sample_0)
-//                    .error(R.drawable.sample_1)
-//                    .into(image);
-        Glide.with(getContext())
+        if (item instanceof Integer) {
+            image.setImageResource((Integer) item);
+        } else {
+            Glide.with(getContext())
                 .load(item.toString())
                 .placeholder(R.drawable.sample_0)
                 .error(R.drawable.sample_1)
                 .into(image);
+        }
 
         return view;
     }
