@@ -17,6 +17,11 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
     private int mResource;
     private int mFieldId = 0;
 
+    public PosterAdapter(Context context, int resource) {
+        super(context, resource);
+        mResource = resource;
+    }
+
     public PosterAdapter(Context context, int resource, int viewResourceId) {
         super(context, resource, viewResourceId);
         mResource = resource;
