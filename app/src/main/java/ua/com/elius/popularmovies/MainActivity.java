@@ -14,25 +14,19 @@ public class MainActivity extends AppCompatActivity {
 
     String LOG_TAG = MainActivity.class.getSimpleName();
 
+    PosterAdapter<String> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PosterAdapter<String> adapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTUwNDU4NjE1N15BMl5BanBnXkFtZTgwOTc0MzA5NDE@._V1_UY209_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTk0Mzg4NDYyOF5BMl5BanBnXkFtZTgwOTM2ODg2NTE@._V1_UX140_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTQ3NjYxMDE1OV5BMl5BanBnXkFtZTgwMjgzOTE4MzE@._V1_UY209_CR1,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTUyMTE0ODcxNF5BMl5BanBnXkFtZTgwODE4NDQzNTE@._V1_UY209_CR2,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTU4MDU3NDQ5Ml5BMl5BanBnXkFtZTgwOTU5MDUxNTE@._V1_UY209_CR1,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTQ4OTgzNTkwNF5BMl5BanBnXkFtZTgwMzI3MDE3NDE@._V1_UY209_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTk1MTkwMzU4Nl5BMl5BanBnXkFtZTgwNjY0MDE1NTE@._V1_UY209_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BMTQ5MTE0MTk3Nl5BMl5BanBnXkFtZTgwMjczMzk2NTE@._V1_UX140_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://ia.media-imdb.com/images/M/MV5BNjI5OTQ0MDQxM15BMl5BanBnXkFtZTgwMzcwNjMyNTE@._V1_UY209_CR0,0,140,209_AL_.jpg");
-        adapter.add("http://st.kp.yandex.net/images/film_iphone/iphone360_594554.jpg");
-
+        adapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(adapter);
+
+        FetchPostersTask fetchPostersTask = new FetchPostersTask();
+        fetchPostersTask.execute(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
