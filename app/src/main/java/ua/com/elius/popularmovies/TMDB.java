@@ -54,17 +54,19 @@ public class TMDB {
         Log.d(LOG_TAG, uri.toString());
         JSONObject response = doRequest(uri.toString());
 
-        JSONArray results;
-        try {
-            results = response.getJSONArray("results");
-            Log.d(LOG_TAG, results.toString());
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject movieJSON = results.getJSONObject(i);
-                Log.d(LOG_TAG, movieJSON.toString());
-                movies.add(new Movie(movieJSON));
+        if (response != null) {
+            JSONArray results;
+            try {
+                results = response.getJSONArray("results");
+                Log.d(LOG_TAG, results.toString());
+                for (int i = 0; i < results.length(); i++) {
+                    JSONObject movieJSON = results.getJSONObject(i);
+                    Log.d(LOG_TAG, movieJSON.toString());
+                    movies.add(new Movie(movieJSON));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         Log.d(LOG_TAG, String.valueOf(movies.size()));
 
@@ -80,26 +82,24 @@ public class TMDB {
                 .build();
 
         Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         String responseString = null;
-        try {
-            if (response != null) {
-                responseString = response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(LOG_TAG + " " + "doRequest", responseString);
-
         JSONObject responseJSON = null;
         try {
-            responseJSON = new JSONObject(responseString);
-        } catch (JSONException e) {
+            response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                try {
+                    responseString = response.body().string();
+                    Log.d(LOG_TAG + " " + "doRequest", responseString);
+                    try {
+                        responseJSON = new JSONObject(responseString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
