@@ -52,7 +52,14 @@ public class TMDB {
         Movies movies = new Movies();
 
         Log.d(LOG_TAG, uri.toString());
-        JSONObject response = doRequest(uri.toString());
+        JSONObject response = null;
+        try {
+            response = doRequest(uri.toString());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Fail to request popular movies data", e);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Response is not valid JSON", e);
+        }
 
         if (response != null) {
             JSONArray results;
@@ -65,7 +72,7 @@ public class TMDB {
                     movies.add(new Movie(movieJSON));
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(LOG_TAG, "Unexpected JSON format", e);
             }
         }
         Log.d(LOG_TAG, String.valueOf(movies.size()));
@@ -73,7 +80,7 @@ public class TMDB {
         return movies;
     }
 
-    private JSONObject doRequest(String url){
+    private JSONObject doRequest(String url) throws IOException, JSONException {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -81,26 +88,14 @@ public class TMDB {
                 .url(url)
                 .build();
 
-        Response response = null;
-        String responseString = null;
+        Response response;
+        String responseString;
         JSONObject responseJSON = null;
-        try {
-            response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                try {
-                    responseString = response.body().string();
-                    Log.d(LOG_TAG + " " + "doRequest", responseString);
-                    try {
-                        responseJSON = new JSONObject(responseString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            responseString = response.body().string();
+            Log.d(LOG_TAG + " " + "doRequest", responseString);
+            responseJSON = new JSONObject(responseString);
         }
 
         return responseJSON;
