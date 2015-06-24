@@ -28,8 +28,8 @@ public class TMDB {
     public static final String API_TOP_RATED_MOVIES_PATH = "movie/top_rated";
     public static final String API_KEY_PARAM = "api_key";
     public static final String IMAGE_AUTHORITY = "image.tmdb.org/t/p";
-    public static final String POSTER_WIDTH = "w185";
-    public static final String BACKDROP_WIDTH = "w300";
+    public static final String POSTER_WIDTH = "w342";
+    public static final String BACKDROP_WIDTH = "w780";
 
     private String mApiKey;
 
@@ -179,7 +179,7 @@ class Movie {
         Uri uri = new Uri.Builder()
                 .scheme(TMDB.SCHEME)
                 .encodedAuthority(TMDB.IMAGE_AUTHORITY)
-                .encodedPath(TMDB.POSTER_WIDTH)
+                .encodedPath(TMDB.BACKDROP_WIDTH)
                 .appendEncodedPath(mBackdropPath.replace("/", ""))
                 .build();
         return uri.toString();
