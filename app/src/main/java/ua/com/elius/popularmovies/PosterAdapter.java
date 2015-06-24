@@ -16,6 +16,7 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
 
     private int mResource;
     private int mFieldId = 0;
+    private Movies mMovies;
 
     public PosterAdapter(Context context, int resource) {
         super(context, resource);
@@ -26,6 +27,14 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
         super(context, resource, viewResourceId);
         mResource = resource;
         mFieldId = viewResourceId;
+    }
+
+    public void setMovies(Movies movies) {
+        this.mMovies = movies;
+    }
+
+    public Movie getMovie(int position) {
+        return mMovies.get(position);
     }
 
     @Override
@@ -66,4 +75,5 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
 
         return view;
     }
+
 }

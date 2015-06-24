@@ -28,9 +28,14 @@ public class MainActivity extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-//                Toast.makeText(MainActivity.this, "" + position,
-//                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, DetailActivity.class));
+                Movie movie = adapter.getMovie(position);
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("backdropURL", movie.getBackdropURL());
+                intent.putExtra("title", movie.getTitle());
+                intent.putExtra("overview", movie.getOverview());
+                intent.putExtra("releaseDate", movie.getReleaseDate());
+                intent.putExtra("rating", String.valueOf(movie.getVoteAverage()));
+                startActivity(intent);
             }
         });
     }

@@ -127,16 +127,62 @@ class Movie {
     String mOverview;     // "Twenty-two years after the events of Jurassic Park, Isla Nublar now features a fully functioning dinosaur theme park, Jurassic World, as originally envisioned by John Hammond."
     String mPosterPath;   // "/uXZYawqUsChGSj54wcuBtEdUJbh.jpg"
     String mBackdropPath; // "/dkMD5qlogeRMiEixC4YNPUvax2T.jpg"
+    String mReleaseDate;  // "2015-06-12"
 
-    public Movie(int mID, double mPopularity, double mVoteAverage, int mVoteCount, String mTitle, String mOverview, String mPosterPath, String mBackdropPath) {
-        this.mID           = mID;
-        this.mPopularity   = mPopularity;
-        this.mVoteAverage  = mVoteAverage;
-        this.mVoteCount    = mVoteCount;
-        this.mTitle        = mTitle;
-        this.mOverview     = mOverview;
-        this.mPosterPath   = mPosterPath;
-        this.mBackdropPath = mBackdropPath;
+    public String getReleaseDate() {
+        return mReleaseDate;
+    }
+
+    public int getID() {
+        return mID;
+    }
+
+    public double getPopularity() {
+        return mPopularity;
+    }
+
+    public double getVoteAverage() {
+        return mVoteAverage;
+    }
+
+    public int getVoteCount() {
+        return mVoteCount;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public String getOverview() {
+        return mOverview;
+    }
+
+    public String getPosterPath() {
+        return mPosterPath;
+    }
+
+    public String getBackdropPath() {
+        return mBackdropPath;
+    }
+
+    public String getPosterURL() {
+        Uri uri = new Uri.Builder()
+                .scheme(TMDB.SCHEME)
+                .encodedAuthority(TMDB.IMAGE_AUTHORITY)
+                .encodedPath(TMDB.POSTER_WIDTH)
+                .appendEncodedPath(mPosterPath.replace("/", ""))
+                .build();
+        return uri.toString();
+    }
+
+    public String getBackdropURL() {
+        Uri uri = new Uri.Builder()
+                .scheme(TMDB.SCHEME)
+                .encodedAuthority(TMDB.IMAGE_AUTHORITY)
+                .encodedPath(TMDB.POSTER_WIDTH)
+                .appendEncodedPath(mBackdropPath.replace("/", ""))
+                .build();
+        return uri.toString();
     }
 
     public Movie(JSONObject json) {
@@ -149,10 +195,12 @@ class Movie {
             this.mOverview     = json.getString("overview");
             this.mPosterPath   = json.getString("poster_path");
             this.mBackdropPath = json.getString("backdrop_path");
+            this.mReleaseDate  = json.getString("release_date");
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }
 
 class Movies {
@@ -167,17 +215,15 @@ class Movies {
         mMovies.add(movie);
     }
 
+    public Movie get(int position) {
+        return mMovies.get(position);
+    }
+
     public List<String> getPosterURLs() {
         List<String> posters = new ArrayList<>();
 
         for (Movie movie : mMovies) {
-            Uri uri = new Uri.Builder()
-                    .scheme(TMDB.SCHEME)
-                    .encodedAuthority(TMDB.IMAGE_AUTHORITY)
-                    .encodedPath(TMDB.POSTER_WIDTH)
-                    .appendEncodedPath(movie.mPosterPath.replace("/", ""))
-                    .build();
-            posters.add(uri.toString());
+            posters.add(movie.getPosterURL());
         }
 
         return posters;

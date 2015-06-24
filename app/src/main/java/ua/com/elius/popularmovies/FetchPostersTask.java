@@ -4,10 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, List<String>> {
+public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Movies> {
 
     private final String LOG_TAG = FetchPostersTask.class.getSimpleName();
 
@@ -19,23 +16,24 @@ public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Lis
     }
 
     @Override
-    protected List<String> doInBackground(PosterAdapter<String>... adapter) {
+    protected Movies doInBackground(PosterAdapter<String>... adapter) {
         mAdapter = adapter[0];
         TMDB api = new TMDB(TMDB.API_KEY);
         String sortBy = PreferenceManager
                 .getDefaultSharedPreferences(mContext).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
-        List<String> posterURLs = new ArrayList<>();
+        Movies movies = null;
         switch (sortBy) {
-            case "1": posterURLs = api.getPopularMovies().getPosterURLs(); break;
-            case "2": posterURLs = api.getTopRatedMovies().getPosterURLs(); break;
+            case "1": movies = api.getPopularMovies(); break;
+            case "2": movies = api.getTopRatedMovies(); break;
         }
-        return posterURLs;
+        return movies;
     }
 
     @Override
-    protected void onPostExecute(List<String> posterURLs) {
-        super.onPostExecute(posterURLs);
-        mAdapter.addAll(posterURLs);
+    protected void onPostExecute(Movies movies) {
+        super.onPostExecute(movies);
+        mAdapter.setMovies(movies);
+        mAdapter.addAll(movies.getPosterURLs());
         mAdapter.notifyDataSetChanged();
     }
 }
