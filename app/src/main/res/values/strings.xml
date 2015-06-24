@@ -16,4 +16,7 @@
         <item>2</item>
     </string-array>
 
+    <string name="title_activity_detail">Movie Details</string>
+    <string name="backdrop_image_description">Backdrop image</string>
+
 </resources>

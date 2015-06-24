@@ -36,7 +36,7 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            view = inflater.inflate(R.layout.poster, parent, false);
+            view = inflater.inflate(mResource, parent, false);
         } else {
             view = convertView;
         }
