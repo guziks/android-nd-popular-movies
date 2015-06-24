@@ -33,6 +33,7 @@ public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Mov
     protected void onPostExecute(Movies movies) {
         super.onPostExecute(movies);
         mAdapter.setMovies(movies);
+        mAdapter.clear();
         mAdapter.addAll(movies.getPosterURLs());
         mAdapter.notifyDataSetChanged();
     }
