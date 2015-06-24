@@ -26,8 +26,8 @@ public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Lis
                 .getDefaultSharedPreferences(mContext).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
         List<String> posterURLs = new ArrayList<>();
         switch (sortBy) {
-            case "1": posterURLs = api.getPopularMovies().getPosterURLs();
-            case "2": posterURLs = api.getTopRatedMovies().getPosterURLs();
+            case "1": posterURLs = api.getPopularMovies().getPosterURLs(); break;
+            case "2": posterURLs = api.getTopRatedMovies().getPosterURLs(); break;
         }
         return posterURLs;
     }

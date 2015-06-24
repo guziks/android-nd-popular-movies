@@ -26,9 +26,6 @@ public class MainActivity extends AppCompatActivity {
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(adapter);
 
-        FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
-        fetchPostersTask.execute(adapter);
-
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
@@ -36,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
+        fetchPostersTask.execute(adapter);
     }
 
     @Override
