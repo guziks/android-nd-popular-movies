@@ -49,6 +49,21 @@ public class TMDB {
                 .appendEncodedPath(API_POPULAR_MOVIES_PATH)
                 .appendQueryParameter(API_KEY_PARAM, mApiKey)
                 .build();
+        return getMovies(uri);
+    }
+
+    public Movies getTopRatedMovies() {
+        Uri uri = new Uri.Builder()
+                .scheme(SCHEME)
+                .authority(API_AUTHORITY)
+                .path(API_VERSION)
+                .appendEncodedPath(API_TOP_RATED_MOVIES_PATH)
+                .appendQueryParameter(API_KEY_PARAM, mApiKey)
+                .build();
+        return getMovies(uri);
+    }
+
+    public Movies getMovies(Uri uri) {
         Movies movies = new Movies();
 
         Log.d(LOG_TAG, uri.toString());
@@ -56,7 +71,7 @@ public class TMDB {
         try {
             response = doRequest(uri.toString());
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Fail to request popular movies data", e);
+            Log.e(LOG_TAG, "Fail to request movies data", e);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Response is not valid JSON", e);
         }

@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 
 public class PosterAdapter<T> extends ArrayAdapter<T> {
 
-    String LOG_TAG = PosterAdapter.class.getSimpleName();
+    private final String LOG_TAG = PosterAdapter.class.getSimpleName();
 
     private int mResource;
     private int mFieldId = 0;

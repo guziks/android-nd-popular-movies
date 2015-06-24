@@ -12,7 +12,7 @@ public class SettingsActivityFragment extends PreferenceFragment implements Pref
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_sort_by)));
+        bindPreferenceSummaryToValue(findPreference(SettingsActivity.KEY_PREF_SORT_BY));
     }
 
     /**

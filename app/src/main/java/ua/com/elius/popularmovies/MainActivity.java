@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     PosterAdapter<String> adapter;
 
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(adapter);
 
-        FetchPostersTask fetchPostersTask = new FetchPostersTask();
+        FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
         fetchPostersTask.execute(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

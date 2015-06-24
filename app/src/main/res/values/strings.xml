@@ -9,7 +9,7 @@
     <string name="pref_key_sort_by">sort_by</string>
     <string-array name="pref_sort_by_titles">
         <item>Popularity</item>
-        <item>Highest rated</item>
+        <item>Top rated</item>
     </string-array>
     <string-array name="pref_sort_by_values">
         <item>1</item>
