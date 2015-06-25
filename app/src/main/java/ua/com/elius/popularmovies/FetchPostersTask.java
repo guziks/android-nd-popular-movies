@@ -3,6 +3,7 @@ package ua.com.elius.popularmovies;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Movies> {
 
@@ -32,9 +33,13 @@ public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Mov
     @Override
     protected void onPostExecute(Movies movies) {
         super.onPostExecute(movies);
-        mAdapter.setMovies(movies);
-        mAdapter.clear();
-        mAdapter.addAll(movies.getPosterURLs());
-        mAdapter.notifyDataSetChanged();
+        try {
+            mAdapter.setMovies(movies);
+            mAdapter.clear();
+            mAdapter.addAll(movies.getPosterURLs());
+            mAdapter.notifyDataSetChanged();
+        } catch (NullPointerException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
     }
 }
