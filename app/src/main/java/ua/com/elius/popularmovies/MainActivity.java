@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    PosterAdapter<String> adapter;
+    PosterAdapter<String> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        adapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
+        mAdapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
-        gridview.setAdapter(adapter);
+        gridview.setAdapter(mAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Movie movie = adapter.getMovie(position);
+                Movie movie = mAdapter.getMovie(position);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtra("backdropURL", movie.getBackdropURL());
                 intent.putExtra("title", movie.getTitle());
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
-        fetchPostersTask.execute(adapter);
+        fetchPostersTask.execute(mAdapter);
     }
 
     @Override
