@@ -46,24 +46,26 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
 
         if (convertView == null) {
             view = inflater.inflate(mResource, parent, false);
+            try {
+                ImageHolder holder = new ImageHolder();
+                if (mFieldId == 0) {
+                    //  If no custom field is assigned, assume the whole resource is a ImageView
+                    holder.image = (ImageView) view;
+                } else {
+                    //  Otherwise, find the TextView field within the layout
+                    holder.image = (ImageView) view.findViewById(mFieldId);
+                }
+                view.setTag(holder);
+            } catch (ClassCastException e) {
+                Log.e("PosterAdapter", "You must supply a resource ID for an ImageView");
+                throw new IllegalStateException(
+                        "PosterAdapter requires the resource ID to be an ImageView", e);
+            }
         } else {
             view = convertView;
         }
 
-        try {
-            if (mFieldId == 0) {
-                //  If no custom field is assigned, assume the whole resource is a ImageView
-                image = (ImageView) view;
-            } else {
-                //  Otherwise, find the TextView field within the layout
-                image = (ImageView) view.findViewById(mFieldId);
-            }
-        } catch (ClassCastException e) {
-            Log.e("PosterAdapter", "You must supply a resource ID for an ImageView");
-            throw new IllegalStateException(
-                    "PosterAdapter requires the resource ID to be an ImageView", e);
-        }
-
+        image = ((ImageHolder)view.getTag()).image;
         T item = getItem(position);
         if (item instanceof Integer) {
             image.setImageResource((Integer) item);
@@ -74,6 +76,10 @@ public class PosterAdapter<T> extends ArrayAdapter<T> {
         }
 
         return view;
+    }
+
+    static class ImageHolder {
+        ImageView image;
     }
 
 }
