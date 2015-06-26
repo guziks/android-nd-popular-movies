@@ -34,10 +34,12 @@ public class FetchPostersTask extends AsyncTask<PosterAdapter<String>, Void, Mov
     protected void onPostExecute(Movies movies) {
         super.onPostExecute(movies);
         try {
-            mAdapter.setMovies(movies);
-            mAdapter.clear();
-            mAdapter.addAll(movies.getPosterURLs());
-            mAdapter.notifyDataSetChanged();
+            if (movies.size() > 0) {
+                mAdapter.setMovies(movies);
+                mAdapter.clear();
+                mAdapter.addAll(movies.getPosterURLs());
+                mAdapter.notifyDataSetChanged();
+            }
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
