@@ -203,26 +203,12 @@ class Movie {
 
 }
 
-class Movies {
-
-    List<Movie> mMovies = new ArrayList<>();
-
-    public int size() {
-        return mMovies.size();
-    }
-
-    public void add(Movie movie) {
-        mMovies.add(movie);
-    }
-
-    public Movie get(int position) {
-        return mMovies.get(position);
-    }
+class Movies extends ArrayList<Movie> {
 
     public List<String> getPosterURLs() {
         List<String> posters = new ArrayList<>();
 
-        for (Movie movie : mMovies) {
+        for (Movie movie : this) {
             posters.add(movie.getPosterURL());
         }
 
