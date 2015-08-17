@@ -39,6 +39,9 @@
             android:name="ua.com.elius.popularmovies.data.MovieProvider"
             android:authorities="ua.com.elius.popularmovies.data"
             android:exported="false" />
+        <service
+            android:name=".FetchService"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -48,6 +48,21 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
         fetchPostersTask.execute(mAdapter);
+
+        String action;
+        String sortBy = PreferenceManager
+                .getDefaultSharedPreferences(this).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
+        switch (sortBy) {
+            case "2":
+                action = FetchService.ACTION_TOP_RATED;
+                break;
+            default:
+                action = FetchService.ACTION_POPULAR;
+                break;
+        }
+        Intent fetchIntent = new Intent(this, FetchService.class);
+        fetchIntent.setAction(action);
+        startService(fetchIntent);
     }
 
     @Override

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.com.elius.popularmovies.data.movie.MovieContentValues;
+
 public class TMDB {
 
     private final String LOG_TAG = TMDB.class.getSimpleName();
@@ -183,6 +185,21 @@ class Movie {
                 .appendEncodedPath(mBackdropPath.replace("/", ""))
                 .build();
         return uri.toString();
+    }
+
+    public MovieContentValues getValues() {
+        MovieContentValues values;
+        values = new MovieContentValues();
+        values.putBackdropPath(getBackdropPath());
+        values.putOverview(getOverview());
+        values.putPopularity(getPopularity());
+        values.putPosterPath(getPosterPath());
+        values.putReleaseDate(getReleaseDate());
+        values.putTitle(getTitle());
+        values.putTmdbMovieId(getID());
+        values.putVoteAverage(getVoteAverage());
+        values.putVoteCount(getVoteCount());
+        return values;
     }
 
     public Movie(JSONObject json) {
