@@ -1,0 +1,49 @@
+{
+  "fields": [
+    {
+      "name": "movie_id",
+      "type": "Long",
+      "nullable": "false",
+      "foreignKey": {
+        "table": "movie",
+        "onDelete": "CASCADE"
+      }
+    },
+    {
+      "name": "tmdb_video_id",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "key",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "name",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "site",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "size",
+      "type": "Integer",
+      "nullable": "false"
+    },
+    {
+      "name": "type",
+      "type": "String",
+      "nullable": "false"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "unique_tmdb_video_id",
+      "definition": "UNIQUE (tmdb_video_id) ON CONFLICT REPLACE"
+    }
+  ]
+}

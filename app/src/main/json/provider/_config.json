@@ -1,0 +1,13 @@
+{
+  "syntaxVersion": 3,
+  "projectPackageId": "ua.com.elius.popularmovies",
+  "authority": "ua.com.elius.popularmovies.data",
+  "providerJavaPackage": "ua.com.elius.popularmovies.data",
+  "providerClassName": "MovieProvider",
+  "sqliteOpenHelperClassName": "MovieDBHelper",
+  "sqliteOpenHelperCallbacksClassName": "MovieDBHelperCallbacks",
+  "databaseFileName": "main.db",
+  "databaseVersion": 1,
+  "enableForeignKeys": true,
+  "useAnnotations": true
+}

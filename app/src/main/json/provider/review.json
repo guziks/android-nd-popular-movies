@@ -1,0 +1,39 @@
+{
+  "fields": [
+    {
+      "name": "movie_id",
+      "type": "Long",
+      "nullable": "false",
+      "foreignKey": {
+        "table": "movie",
+        "onDelete": "CASCADE"
+      }
+    },
+    {
+      "name": "tmdb_review_id",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "author",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "content",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "url",
+      "type": "String",
+      "nullable": "false"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "unique_tmdb_review_id",
+      "definition": "UNIQUE (tmdb_review_id) ON CONFLICT REPLACE"
+    }
+  ]
+}

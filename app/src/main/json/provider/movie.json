@@ -1,0 +1,61 @@
+{
+  "fields": [
+    {
+      "name": "tmdb_movie_id",
+      "type": "Integer",
+      "nullable": "false"
+    },
+    {
+      "name": "popularity",
+      "type": "Double",
+      "nullable": "false"
+    },
+    {
+      "name": "vote_average",
+      "type": "Double",
+      "nullable": "false"
+    },
+    {
+      "name": "vote_count",
+      "type": "Integer",
+      "nullable": "false"
+    },
+    {
+      "name": "title",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "overview",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "poster_path",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "backdrop_path",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "release_date",
+      "type": "String",
+      "nullable": "false"
+    },
+    {
+      "name": "like",
+      "type": "Boolean",
+      "defaultValue": "false",
+      "nullable": "false"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "unique_tmdb_movie_id",
+      "definition": "UNIQUE (tmdb_movie_id) ON CONFLICT REPLACE"
+    }
+  ]
+}
