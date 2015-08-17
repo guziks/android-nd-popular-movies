@@ -35,6 +35,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ua.com.elius.popularmovies.MainActivity" />
         </activity>
+        <provider
+            android:name="ua.com.elius.popularmovies.data.MovieProvider"
+            android:authorities="ua.com.elius.popularmovies.data"
+            android:exported="false" />
     </application>
 
 </manifest>
