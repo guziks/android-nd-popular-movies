@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.elius.popularmovies.data.movie.MovieContentValues;
+import ua.com.elius.popularmovies.data.review.ReviewContentValues;
+import ua.com.elius.popularmovies.data.video.VideoContentValues;
 
 public class TMDB {
 
@@ -121,7 +123,7 @@ public class TMDB {
 
 class Movie {
 
-    int    mID;           // 135397
+    int    mId;           // 135397
     double mPopularity;   // 87.551849
     double mVoteAverage;  // 7.1
     int    mVoteCount;    // 431
@@ -135,8 +137,8 @@ class Movie {
         return mReleaseDate;
     }
 
-    public int getID() {
-        return mID;
+    public int getId() {
+        return mId;
     }
 
     public double getPopularity() {
@@ -190,21 +192,21 @@ class Movie {
     public MovieContentValues getValues() {
         MovieContentValues values;
         values = new MovieContentValues();
-        values.putBackdropPath(getBackdropPath());
-        values.putOverview(getOverview());
-        values.putPopularity(getPopularity());
-        values.putPosterPath(getPosterPath());
-        values.putReleaseDate(getReleaseDate());
-        values.putTitle(getTitle());
-        values.putTmdbMovieId(getID());
-        values.putVoteAverage(getVoteAverage());
-        values.putVoteCount(getVoteCount());
+        values.putBackdropPath(mBackdropPath);
+        values.putOverview(mOverview);
+        values.putPopularity(mPopularity);
+        values.putPosterPath(mPosterPath);
+        values.putReleaseDate(mReleaseDate);
+        values.putTitle(mTitle);
+        values.putTmdbMovieId(mId);
+        values.putVoteAverage(mVoteAverage);
+        values.putVoteCount(mVoteCount);
         return values;
     }
 
     public Movie(JSONObject json) {
         try {
-            this.mID           = json.getInt("id");
+            this.mId = json.getInt("id");
             this.mPopularity   = json.getDouble("popularity");
             this.mVoteAverage  = json.getDouble("vote_average");
             this.mVoteCount    = json.getInt("vote_count");
@@ -233,3 +235,109 @@ class Movies extends ArrayList<Movie> {
     }
 
 }
+
+class Video {
+    int    mSize;
+    String mKey;
+    String mName;
+    String mSite;
+    String mTmdbVideoId;
+    String mType;
+
+    public int getmSize() {
+        return mSize;
+    }
+
+    public String getmKey() {
+        return mKey;
+    }
+
+    public String getmName() {
+        return mName;
+    }
+
+    public String getmSite() {
+        return mSite;
+    }
+
+    public String getmTmdbVideoId() {
+        return mTmdbVideoId;
+    }
+
+    public String getmType() {
+        return mType;
+    }
+
+    public VideoContentValues getValues() {
+        VideoContentValues values;
+        values = new VideoContentValues();
+        values.putKey(mKey);
+        values.putName(mName);
+        values.putSite(mSite);
+        values.putSize(mSize);
+        values.putTmdbVideoId(mTmdbVideoId);
+        values.putType(mType);
+        return values;
+    }
+
+    public Video(JSONObject json) {
+        try {
+            this.mSize        = json.getInt("size");
+            this.mKey         = json.getString("key");
+            this.mName        = json.getString("name");
+            this.mSite        = json.getString("site");
+            this.mTmdbVideoId = json.getString("id");
+            this.mType        = json.getString("type");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Videos extends ArrayList<Video> {}
+
+class Review {
+    String mAuthor;
+    String mContent;
+    String mTmdbReviewId;
+    String mUrl;
+
+    public String getmAuthor() {
+        return mAuthor;
+    }
+
+    public String getmContent() {
+        return mContent;
+    }
+
+    public String getmTmdbReviewId() {
+        return mTmdbReviewId;
+    }
+
+    public String getmUrl() {
+        return mUrl;
+    }
+
+    public ReviewContentValues getValues() {
+        ReviewContentValues values;
+        values = new ReviewContentValues();
+        values.putAuthor(mAuthor);
+        values.putContent(mContent);
+        values.putTmdbReviewId(mTmdbReviewId);
+        values.putUrl(mUrl);
+        return values;
+    }
+
+    public Review(JSONObject json) {
+        try {
+            this.mAuthor       = json.getString("author");
+            this.mContent      = json.getString("content");
+            this.mTmdbReviewId = json.getString("id");
+            this.mUrl          = json.getString("url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Reviews extends ArrayList<Review> {}

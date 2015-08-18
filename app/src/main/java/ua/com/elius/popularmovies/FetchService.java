@@ -14,8 +14,11 @@ public class FetchService extends IntentService {
 
     private final String LOG_TAG = FetchService.class.getSimpleName();
 
+    public static final String EXTRA_TMDB_MOVIE_ID = "intent.extra.TMDB_MOVIE_ID";
     public static final String ACTION_POPULAR = "intent.action.POPULAR";
     public static final String ACTION_TOP_RATED = "intent.action.TOP_RATED";
+    public static final String ACTION_REVIEW = "intent.action.REVIEW";
+    public static final String ACTION_VIDEO = "intent.action.VIDEO";
 
     public FetchService() {
         super("FetchService");
@@ -29,6 +32,7 @@ public class FetchService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         TMDB api = new TMDB(TMDB.API_KEY);
         Movies movies;
+        int tmdbMovieId;
 
         String action = intent.getAction();
 
@@ -46,6 +50,14 @@ public class FetchService extends IntentService {
                     saveData(movies);
                     saveListOfTopRated(movies);
                     break;
+                case ACTION_REVIEW:
+//                  TODO review fetching
+                    tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
+                    break;
+                case ACTION_VIDEO:
+//                  TODO video fetching
+                    tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
+                    break;
             }
         }
     }
@@ -55,7 +67,7 @@ public class FetchService extends IntentService {
         MovieCursor cursor;
         for (Movie movie : movies) {
             where = new MovieSelection();
-            where.tmdbMovieId(movie.getID());
+            where.tmdbMovieId(movie.getId());
             cursor = where.query(getContentResolver());
             if (cursor.getCount() == 1) {
                 movie.getValues().update(getContentResolver(), where);
@@ -75,7 +87,7 @@ public class FetchService extends IntentService {
 
         for (Movie movie : movies) {
             values = new ListPopularContentValues();
-            values.putTmdbMovieId(movie.getID());
+            values.putTmdbMovieId(movie.getId());
             values.insert(getContentResolver());
         }
     }
@@ -89,7 +101,7 @@ public class FetchService extends IntentService {
 
         for (Movie movie : movies) {
             values = new ListTopRatedContentValues();
-            values.putTmdbMovieId(movie.getID());
+            values.putTmdbMovieId(movie.getId());
             values.insert(getContentResolver());
         }
     }
