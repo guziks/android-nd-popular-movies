@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import ua.com.elius.popularmovies.data.MovieProvider;
+import ua.com.elius.popularmovies.data.listpopular.ListPopularColumns;
+import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedColumns;
 import ua.com.elius.popularmovies.data.movie.MovieColumns;
 import ua.com.elius.popularmovies.data.review.ReviewColumns;
 import ua.com.elius.popularmovies.data.video.VideoColumns;

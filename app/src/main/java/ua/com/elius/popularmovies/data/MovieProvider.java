@@ -12,6 +12,8 @@ import android.util.Log;
 
 import ua.com.elius.popularmovies.BuildConfig;
 import ua.com.elius.popularmovies.data.base.BaseContentProvider;
+import ua.com.elius.popularmovies.data.listpopular.ListPopularColumns;
+import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedColumns;
 import ua.com.elius.popularmovies.data.movie.MovieColumns;
 import ua.com.elius.popularmovies.data.review.ReviewColumns;
 import ua.com.elius.popularmovies.data.video.VideoColumns;
@@ -27,20 +29,30 @@ public class MovieProvider extends BaseContentProvider {
     public static final String AUTHORITY = "ua.com.elius.popularmovies.data";
     public static final String CONTENT_URI_BASE = "content://" + AUTHORITY;
 
-    private static final int URI_TYPE_MOVIE = 0;
-    private static final int URI_TYPE_MOVIE_ID = 1;
+    private static final int URI_TYPE_LIST_POPULAR = 0;
+    private static final int URI_TYPE_LIST_POPULAR_ID = 1;
 
-    private static final int URI_TYPE_REVIEW = 2;
-    private static final int URI_TYPE_REVIEW_ID = 3;
+    private static final int URI_TYPE_LIST_TOP_RATED = 2;
+    private static final int URI_TYPE_LIST_TOP_RATED_ID = 3;
 
-    private static final int URI_TYPE_VIDEO = 4;
-    private static final int URI_TYPE_VIDEO_ID = 5;
+    private static final int URI_TYPE_MOVIE = 4;
+    private static final int URI_TYPE_MOVIE_ID = 5;
+
+    private static final int URI_TYPE_REVIEW = 6;
+    private static final int URI_TYPE_REVIEW_ID = 7;
+
+    private static final int URI_TYPE_VIDEO = 8;
+    private static final int URI_TYPE_VIDEO_ID = 9;
 
 
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
+        URI_MATCHER.addURI(AUTHORITY, ListPopularColumns.TABLE_NAME, URI_TYPE_LIST_POPULAR);
+        URI_MATCHER.addURI(AUTHORITY, ListPopularColumns.TABLE_NAME + "/#", URI_TYPE_LIST_POPULAR_ID);
+        URI_MATCHER.addURI(AUTHORITY, ListTopRatedColumns.TABLE_NAME, URI_TYPE_LIST_TOP_RATED);
+        URI_MATCHER.addURI(AUTHORITY, ListTopRatedColumns.TABLE_NAME + "/#", URI_TYPE_LIST_TOP_RATED_ID);
         URI_MATCHER.addURI(AUTHORITY, MovieColumns.TABLE_NAME, URI_TYPE_MOVIE);
         URI_MATCHER.addURI(AUTHORITY, MovieColumns.TABLE_NAME + "/#", URI_TYPE_MOVIE_ID);
         URI_MATCHER.addURI(AUTHORITY, ReviewColumns.TABLE_NAME, URI_TYPE_REVIEW);
@@ -63,6 +75,16 @@ public class MovieProvider extends BaseContentProvider {
     public String getType(Uri uri) {
         int match = URI_MATCHER.match(uri);
         switch (match) {
+            case URI_TYPE_LIST_POPULAR:
+                return TYPE_CURSOR_DIR + ListPopularColumns.TABLE_NAME;
+            case URI_TYPE_LIST_POPULAR_ID:
+                return TYPE_CURSOR_ITEM + ListPopularColumns.TABLE_NAME;
+
+            case URI_TYPE_LIST_TOP_RATED:
+                return TYPE_CURSOR_DIR + ListTopRatedColumns.TABLE_NAME;
+            case URI_TYPE_LIST_TOP_RATED_ID:
+                return TYPE_CURSOR_ITEM + ListTopRatedColumns.TABLE_NAME;
+
             case URI_TYPE_MOVIE:
                 return TYPE_CURSOR_DIR + MovieColumns.TABLE_NAME;
             case URI_TYPE_MOVIE_ID:
@@ -120,6 +142,22 @@ public class MovieProvider extends BaseContentProvider {
         String id = null;
         int matchedId = URI_MATCHER.match(uri);
         switch (matchedId) {
+            case URI_TYPE_LIST_POPULAR:
+            case URI_TYPE_LIST_POPULAR_ID:
+                res.table = ListPopularColumns.TABLE_NAME;
+                res.idColumn = ListPopularColumns._ID;
+                res.tablesWithJoins = ListPopularColumns.TABLE_NAME;
+                res.orderBy = ListPopularColumns.DEFAULT_ORDER;
+                break;
+
+            case URI_TYPE_LIST_TOP_RATED:
+            case URI_TYPE_LIST_TOP_RATED_ID:
+                res.table = ListTopRatedColumns.TABLE_NAME;
+                res.idColumn = ListTopRatedColumns._ID;
+                res.tablesWithJoins = ListTopRatedColumns.TABLE_NAME;
+                res.orderBy = ListTopRatedColumns.DEFAULT_ORDER;
+                break;
+
             case URI_TYPE_MOVIE:
             case URI_TYPE_MOVIE_ID:
                 res.table = MovieColumns.TABLE_NAME;
@@ -155,6 +193,8 @@ public class MovieProvider extends BaseContentProvider {
         }
 
         switch (matchedId) {
+            case URI_TYPE_LIST_POPULAR_ID:
+            case URI_TYPE_LIST_TOP_RATED_ID:
             case URI_TYPE_MOVIE_ID:
             case URI_TYPE_REVIEW_ID:
             case URI_TYPE_VIDEO_ID:

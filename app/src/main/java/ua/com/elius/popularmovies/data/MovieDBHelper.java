@@ -10,6 +10,8 @@ import android.os.Build;
 import android.util.Log;
 
 import ua.com.elius.popularmovies.BuildConfig;
+import ua.com.elius.popularmovies.data.listpopular.ListPopularColumns;
+import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedColumns;
 import ua.com.elius.popularmovies.data.movie.MovieColumns;
 import ua.com.elius.popularmovies.data.review.ReviewColumns;
 import ua.com.elius.popularmovies.data.video.VideoColumns;
@@ -24,6 +26,20 @@ public class MovieDBHelper extends SQLiteOpenHelper {
     private final MovieDBHelperCallbacks mOpenHelperCallbacks;
 
     // @formatter:off
+    public static final String SQL_CREATE_TABLE_LIST_POPULAR = "CREATE TABLE IF NOT EXISTS "
+            + ListPopularColumns.TABLE_NAME + " ( "
+            + ListPopularColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + ListPopularColumns.TMDB_MOVIE_ID + " INTEGER NOT NULL "
+            + ", CONSTRAINT unique_tmdb_movie_id UNIQUE (tmdb_movie_id) ON CONFLICT REPLACE"
+            + " );";
+
+    public static final String SQL_CREATE_TABLE_LIST_TOP_RATED = "CREATE TABLE IF NOT EXISTS "
+            + ListTopRatedColumns.TABLE_NAME + " ( "
+            + ListTopRatedColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + ListTopRatedColumns.TMDB_MOVIE_ID + " INTEGER NOT NULL "
+            + ", CONSTRAINT unique_tmdb_movie_id UNIQUE (tmdb_movie_id) ON CONFLICT REPLACE"
+            + " );";
+
     public static final String SQL_CREATE_TABLE_MOVIE = "CREATE TABLE IF NOT EXISTS "
             + MovieColumns.TABLE_NAME + " ( "
             + MovieColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -120,6 +136,8 @@ public class MovieDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
         mOpenHelperCallbacks.onPreCreate(mContext, db);
+        db.execSQL(SQL_CREATE_TABLE_LIST_POPULAR);
+        db.execSQL(SQL_CREATE_TABLE_LIST_TOP_RATED);
         db.execSQL(SQL_CREATE_TABLE_MOVIE);
         db.execSQL(SQL_CREATE_TABLE_REVIEW);
         db.execSQL(SQL_CREATE_TABLE_VIDEO);

@@ -1,0 +1,15 @@
+{
+  "fields": [
+    {
+      "name": "tmdb_movie_id",
+      "type": "Integer",
+      "nullable": "false"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "unique_tmdb_movie_id",
+      "definition": "UNIQUE (tmdb_movie_id) ON CONFLICT REPLACE"
+    }
+  ]
+}
