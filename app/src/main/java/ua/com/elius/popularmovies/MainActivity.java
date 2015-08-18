@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
                 Movie movie = mAdapter.getMovie(position);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("id", movie.getId());
                 intent.putExtra("backdropURL", movie.getBackdropURL());
                 intent.putExtra("title", movie.getTitle());
                 intent.putExtra("overview", movie.getOverview());

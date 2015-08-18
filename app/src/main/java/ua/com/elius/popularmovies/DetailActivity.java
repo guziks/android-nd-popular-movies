@@ -38,6 +38,14 @@ public class DetailActivity extends AppCompatActivity {
         overview.setText(intent.getStringExtra("overview"));
         releaseDate.setText(intent.getStringExtra("releaseDate"));
         rating.setText(intent.getStringExtra("rating"));
+
+        Intent fetchIntent = new Intent(this, FetchService.class);
+        fetchIntent.setAction(FetchService.ACTION_VIDEO);
+        fetchIntent.putExtra(
+                FetchService.EXTRA_TMDB_MOVIE_ID,
+                intent.getIntExtra("id", 0)
+        );
+        startService(fetchIntent);
     }
 
     @Override

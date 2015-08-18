@@ -28,8 +28,10 @@ public class TMDB {
     public static final String SCHEME = "https";
     public static final String API_AUTHORITY = "api.themoviedb.org";
     public static final String API_VERSION = "3";
-    public static final String API_POPULAR_MOVIES_PATH = "movie/popular";
-    public static final String API_TOP_RATED_MOVIES_PATH = "movie/top_rated";
+    public static final String API_MOVIE_PATH = "movie";
+    public static final String API_POPULAR_MOVIES_PATH = "popular";
+    public static final String API_TOP_RATED_MOVIES_PATH = "top_rated";
+    public static final String API_VIDEOS_PATH = "videos";
     public static final String API_KEY_PARAM = "api_key";
     public static final String IMAGE_AUTHORITY = "image.tmdb.org/t/p";
     public static final String POSTER_WIDTH = "w342";
@@ -50,7 +52,8 @@ public class TMDB {
                 .scheme(SCHEME)
                 .authority(API_AUTHORITY)
                 .path(API_VERSION)
-                .appendEncodedPath(API_POPULAR_MOVIES_PATH)
+                .appendPath(API_MOVIE_PATH)
+                .appendPath(API_POPULAR_MOVIES_PATH)
                 .appendQueryParameter(API_KEY_PARAM, mApiKey)
                 .build();
         return getMovies(uri);
@@ -61,7 +64,8 @@ public class TMDB {
                 .scheme(SCHEME)
                 .authority(API_AUTHORITY)
                 .path(API_VERSION)
-                .appendEncodedPath(API_TOP_RATED_MOVIES_PATH)
+                .appendPath(API_MOVIE_PATH)
+                .appendPath(API_TOP_RATED_MOVIES_PATH)
                 .appendQueryParameter(API_KEY_PARAM, mApiKey)
                 .build();
         return getMovies(uri);
@@ -97,6 +101,47 @@ public class TMDB {
         Log.d(LOG_TAG, String.valueOf(movies.size()));
 
         return movies;
+    }
+
+    public Videos getVideos(int tmdbMovieId) {
+        Videos videos = new Videos();
+
+        Uri uri = new Uri.Builder()
+                .scheme(SCHEME)
+                .authority(API_AUTHORITY)
+                .path(API_VERSION)
+                .appendPath(API_MOVIE_PATH)
+                .appendPath(Integer.toString(tmdbMovieId))
+                .appendPath(API_VIDEOS_PATH)
+                .appendQueryParameter(API_KEY_PARAM, mApiKey)
+                .build();
+
+        Log.d(LOG_TAG, uri.toString());
+        JSONObject response = null;
+        try {
+            response = doRequest(uri.toString());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Fail to request video data", e);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Response is not valid JSON", e);
+        }
+
+        if (response != null) {
+            JSONArray results;
+            try {
+                results = response.getJSONArray("results");
+                Log.d(LOG_TAG, results.toString());
+                for (int i = 0; i < results.length(); i++) {
+                    JSONObject videoJSON = results.getJSONObject(i);
+                    Log.d(LOG_TAG, videoJSON.toString());
+                    videos.add(new Video(videoJSON));
+                }
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Unexpected JSON format", e);
+            }
+        }
+
+        return videos;
     }
 
     private JSONObject doRequest(String url) throws IOException, JSONException {

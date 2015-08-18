@@ -9,6 +9,9 @@ import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedContentValues;
 import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedSelection;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
+import ua.com.elius.popularmovies.data.video.VideoContentValues;
+import ua.com.elius.popularmovies.data.video.VideoCursor;
+import ua.com.elius.popularmovies.data.video.VideoSelection;
 
 public class FetchService extends IntentService {
 
@@ -33,6 +36,8 @@ public class FetchService extends IntentService {
         TMDB api = new TMDB(TMDB.API_KEY);
         Movies movies;
         int tmdbMovieId;
+        Videos videos;
+        Reviews reviews;
 
         String action = intent.getAction();
 
@@ -42,12 +47,12 @@ public class FetchService extends IntentService {
             switch (action) {
                 case ACTION_POPULAR:
                     movies = api.getPopularMovies();
-                    saveData(movies);
+                    saveMovies(movies);
                     saveListOfPopular(movies);
                     break;
                 case ACTION_TOP_RATED:
                     movies = api.getTopRatedMovies();
-                    saveData(movies);
+                    saveMovies(movies);
                     saveListOfTopRated(movies);
                     break;
                 case ACTION_REVIEW:
@@ -57,12 +62,14 @@ public class FetchService extends IntentService {
                 case ACTION_VIDEO:
 //                  TODO video fetching
                     tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
+                    videos = api.getVideos(tmdbMovieId);
+                    saveVideos(videos, tmdbMovieId);
                     break;
             }
         }
     }
 
-    private void saveData(Movies movies) {
+    private void saveMovies(Movies movies) {
         MovieSelection where;
         MovieCursor cursor;
         for (Movie movie : movies) {
@@ -103,6 +110,32 @@ public class FetchService extends IntentService {
             values = new ListTopRatedContentValues();
             values.putTmdbMovieId(movie.getId());
             values.insert(getContentResolver());
+        }
+    }
+
+    private void saveVideos(Videos videos, int tmdbMovieId) {
+        VideoSelection whereVideo;
+        VideoCursor VideoCursor;
+        MovieSelection whereMovie;
+        MovieCursor movieCursor;
+
+        VideoContentValues values;
+        for (Video video : videos) {
+            values = video.getValues();
+            whereVideo = new VideoSelection();
+            // select this video in video table
+            whereVideo.tmdbVideoId(video.getmTmdbVideoId());
+            VideoCursor = whereVideo.query(getContentResolver());
+            if (VideoCursor.getCount() == 1) {
+                values.update(getContentResolver(), whereVideo);
+            } else {
+                whereMovie = new MovieSelection();
+                whereMovie.tmdbMovieId(tmdbMovieId);
+                movieCursor = whereMovie.query(getContentResolver());
+                movieCursor.moveToFirst();
+                values.putMovieId(movieCursor.getId());
+                values.insert(getContentResolver());
+            }
         }
     }
 }
