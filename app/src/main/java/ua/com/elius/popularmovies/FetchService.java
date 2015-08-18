@@ -9,6 +9,9 @@ import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedContentValues;
 import ua.com.elius.popularmovies.data.listtoprated.ListTopRatedSelection;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
+import ua.com.elius.popularmovies.data.review.ReviewContentValues;
+import ua.com.elius.popularmovies.data.review.ReviewCursor;
+import ua.com.elius.popularmovies.data.review.ReviewSelection;
 import ua.com.elius.popularmovies.data.video.VideoContentValues;
 import ua.com.elius.popularmovies.data.video.VideoCursor;
 import ua.com.elius.popularmovies.data.video.VideoSelection;
@@ -58,6 +61,8 @@ public class FetchService extends IntentService {
                 case ACTION_REVIEW:
 //                  TODO review fetching
                     tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
+                    reviews = api.getReviews(tmdbMovieId);
+                    saveReviews(reviews, tmdbMovieId);
                     break;
                 case ACTION_VIDEO:
 //                  TODO video fetching
@@ -133,6 +138,34 @@ public class FetchService extends IntentService {
                 whereMovie.tmdbMovieId(tmdbMovieId);
                 movieCursor = whereMovie.query(getContentResolver());
                 movieCursor.moveToFirst();
+                // put foreign key
+                values.putMovieId(movieCursor.getId());
+                values.insert(getContentResolver());
+            }
+        }
+    }
+
+    private void saveReviews(Reviews reviews, int tmdbMovieId) {
+        ReviewSelection whereReview;
+        ReviewCursor ReviewCursor;
+        MovieSelection whereMovie;
+        MovieCursor movieCursor;
+
+        ReviewContentValues values;
+        for (Review review : reviews) {
+            values = review.getValues();
+            whereReview = new ReviewSelection();
+            // select this review in review table
+            whereReview.tmdbReviewId(review.getmTmdbReviewId());
+            ReviewCursor = whereReview.query(getContentResolver());
+            if (ReviewCursor.getCount() == 1) {
+                values.update(getContentResolver(), whereReview);
+            } else {
+                whereMovie = new MovieSelection();
+                whereMovie.tmdbMovieId(tmdbMovieId);
+                movieCursor = whereMovie.query(getContentResolver());
+                movieCursor.moveToFirst();
+                // put foreign key
                 values.putMovieId(movieCursor.getId());
                 values.insert(getContentResolver());
             }

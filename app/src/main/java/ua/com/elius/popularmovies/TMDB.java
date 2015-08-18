@@ -32,6 +32,7 @@ public class TMDB {
     public static final String API_POPULAR_MOVIES_PATH = "popular";
     public static final String API_TOP_RATED_MOVIES_PATH = "top_rated";
     public static final String API_VIDEOS_PATH = "videos";
+    public static final String API_REVIEWS_PATH = "reviews";
     public static final String API_KEY_PARAM = "api_key";
     public static final String IMAGE_AUTHORITY = "image.tmdb.org/t/p";
     public static final String POSTER_WIDTH = "w342";
@@ -142,6 +143,47 @@ public class TMDB {
         }
 
         return videos;
+    }
+
+    public Reviews getReviews(int tmdbMovieId) {
+        Reviews reviews = new Reviews();
+
+        Uri uri = new Uri.Builder()
+                .scheme(SCHEME)
+                .authority(API_AUTHORITY)
+                .path(API_VERSION)
+                .appendPath(API_MOVIE_PATH)
+                .appendPath(Integer.toString(tmdbMovieId))
+                .appendPath(API_REVIEWS_PATH)
+                .appendQueryParameter(API_KEY_PARAM, mApiKey)
+                .build();
+
+        Log.d(LOG_TAG, uri.toString());
+        JSONObject response = null;
+        try {
+            response = doRequest(uri.toString());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Fail to request review data", e);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Response is not valid JSON", e);
+        }
+
+        if (response != null) {
+            JSONArray results;
+            try {
+                results = response.getJSONArray("results");
+                Log.d(LOG_TAG, results.toString());
+                for (int i = 0; i < results.length(); i++) {
+                    JSONObject reviewJSON = results.getJSONObject(i);
+                    Log.d(LOG_TAG, reviewJSON.toString());
+                    reviews.add(new Review(reviewJSON));
+                }
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Unexpected JSON format", e);
+            }
+        }
+
+        return reviews;
     }
 
     private JSONObject doRequest(String url) throws IOException, JSONException {

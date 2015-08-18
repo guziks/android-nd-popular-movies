@@ -39,11 +39,17 @@ public class DetailActivity extends AppCompatActivity {
         releaseDate.setText(intent.getStringExtra("releaseDate"));
         rating.setText(intent.getStringExtra("rating"));
 
+        int tmdbMovieId = intent.getIntExtra("id", 0);
+        startFetch(tmdbMovieId, FetchService.ACTION_VIDEO);
+        startFetch(tmdbMovieId, FetchService.ACTION_REVIEW);
+    }
+
+    private void startFetch(int tmdbMovieId, String action) {
         Intent fetchIntent = new Intent(this, FetchService.class);
-        fetchIntent.setAction(FetchService.ACTION_VIDEO);
+        fetchIntent.setAction(action);
         fetchIntent.putExtra(
                 FetchService.EXTRA_TMDB_MOVIE_ID,
-                intent.getIntExtra("id", 0)
+                tmdbMovieId
         );
         startService(fetchIntent);
     }
