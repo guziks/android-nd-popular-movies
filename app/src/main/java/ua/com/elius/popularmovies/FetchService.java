@@ -31,19 +31,23 @@ public class FetchService extends IntentService {
         Movies movies;
 
         String action = intent.getAction();
-        switch (action) {
-            case ACTION_TOP_RATED:
-                movies = api.getTopRatedMovies();
-                saveData(movies);
-                saveListOfTopRated(movies);
-                break;
-            default:
-                movies = api.getPopularMovies();
-                saveData(movies);
-                saveListOfPopular(movies);
-                break;
-        }
 
+        if (action == null) {
+            return;
+        } else {
+            switch (action) {
+                case ACTION_POPULAR:
+                    movies = api.getPopularMovies();
+                    saveData(movies);
+                    saveListOfPopular(movies);
+                    break;
+                case ACTION_TOP_RATED:
+                    movies = api.getTopRatedMovies();
+                    saveData(movies);
+                    saveListOfTopRated(movies);
+                    break;
+            }
+        }
     }
 
     private void saveData(Movies movies) {
