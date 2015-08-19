@@ -13,8 +13,6 @@ import android.view.MenuItem;
 import android.widget.GridView;
 
 import ua.com.elius.popularmovies.data.movie.MovieColumns;
-import ua.com.elius.popularmovies.data.movie.MovieCursor;
-import ua.com.elius.popularmovies.data.movie.MovieSelection;
 
 
 public class MainActivity extends AppCompatActivity
@@ -23,6 +21,7 @@ public class MainActivity extends AppCompatActivity
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     PosterAdapter mPosterAdapter;
+    String mSortBy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +30,12 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        mSortBy = PreferenceManager
+                .getDefaultSharedPreferences(this).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
+
         getSupportLoaderManager().initLoader(0, null, this);
 
-        MovieSelection where;
-        MovieCursor cursor;
-        where = new MovieSelection();
-        where.title("Jurassic World");
-        cursor = where.query(getContentResolver());
-
-        mPosterAdapter = new PosterAdapter(this, R.layout.poster, cursor, 0);
+        mPosterAdapter = new PosterAdapter(this, R.layout.poster, null, 0);
 
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(mPosterAdapter);
@@ -64,10 +60,17 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        String action;
-        String sortBy = PreferenceManager
+        String currentSortBy = PreferenceManager
                 .getDefaultSharedPreferences(this).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
-        switch (sortBy) {
+
+        if (!currentSortBy.equals(mSortBy)) {
+            mSortBy = currentSortBy;
+            getSupportLoaderManager().restartLoader(0, null, this);
+        }
+
+        String action;
+
+        switch (mSortBy) {
             case "2":
                 action = FetchService.ACTION_TOP_RATED;
                 break;
@@ -105,10 +108,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
+        String sortColumn;
+        switch (mSortBy) {
+            case "2":
+                sortColumn = MovieColumns.VOTE_AVERAGE;
+                break;
+            default:
+                sortColumn = MovieColumns.POPULARITY;
+                break;
+        }
         CursorLoader loader = new CursorLoader(
                 this,
                 MovieColumns.CONTENT_URI,
-                null, null, null, null
+                null, null, null, sortColumn + " DESC LIMIT 20"
         );
 
         return loader;
