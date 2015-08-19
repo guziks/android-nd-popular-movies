@@ -10,9 +10,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import ua.com.elius.popularmovies.data.movie.MovieColumns;
+import ua.com.elius.popularmovies.data.movie.MovieCursor;
 
 
 public class MainActivity extends AppCompatActivity
@@ -40,20 +43,21 @@ public class MainActivity extends AppCompatActivity
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(mPosterAdapter);
 
-//        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View v,
-//                                    int position, long id) {
-//                Movie movie = mPosterAdapter.getMovie(position);
-//                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-//                intent.putExtra("id", movie.getId());
-//                intent.putExtra("backdropURL", movie.getBackdropURL());
-//                intent.putExtra("title", movie.getTitle());
-//                intent.putExtra("overview", movie.getOverview());
-//                intent.putExtra("releaseDate", movie.getReleaseDate());
-//                intent.putExtra("rating", String.valueOf(movie.getVoteAverage()));
-//                startActivity(intent);
-//            }
-//        });
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Cursor cursor;
+                MovieCursor moviesCursor;
+
+                cursor = mPosterAdapter.getCursor();
+                moviesCursor = new MovieCursor(cursor);
+
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("id", moviesCursor.getTmdbMovieId());
+
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

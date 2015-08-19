@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import ua.com.elius.popularmovies.data.movie.MovieCursor;
+import ua.com.elius.popularmovies.data.movie.MovieSelection;
+
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -23,23 +26,35 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        Intent intent = getIntent();
+        int tmdbMovieId = intent.getIntExtra("id", 0);
+
+        MovieSelection where;
+        MovieCursor cursor;
+        Movie movie;
+
+        where = new MovieSelection();
+        where.tmdbMovieId(tmdbMovieId);
+        cursor = where.query(getContentResolver());
+        cursor.moveToFirst();
+        movie = new Movie(cursor);
+
         ImageView backdrop    = (ImageView) findViewById(R.id.backdrop);
         TextView  title       = (TextView)  findViewById(R.id.title);
         TextView  overview    = (TextView)  findViewById(R.id.overview);
         TextView  releaseDate = (TextView)  findViewById(R.id.release_date);
         TextView  rating      = (TextView)  findViewById(R.id.rating);
 
-        Intent intent = getIntent();
 
         Glide.with(this)
-                .load(intent.getStringExtra("backdropURL"))
+                .load(movie.getBackdropURL())
                 .into(backdrop);
-        title.setText(intent.getStringExtra("title"));
-        overview.setText(intent.getStringExtra("overview"));
-        releaseDate.setText(intent.getStringExtra("releaseDate"));
-        rating.setText(intent.getStringExtra("rating"));
+        title.setText(movie.getTitle());
+        overview.setText(movie.getOverview());
+        releaseDate.setText(movie.getReleaseDate());
+        rating.setText(Double.toString(movie.getVoteAverage()));
 
-        int tmdbMovieId = intent.getIntExtra("id", 0);
         startFetch(tmdbMovieId, FetchService.ACTION_VIDEO);
         startFetch(tmdbMovieId, FetchService.ACTION_REVIEW);
     }
