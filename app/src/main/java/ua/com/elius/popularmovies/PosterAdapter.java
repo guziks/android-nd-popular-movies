@@ -23,7 +23,7 @@ public class PosterAdapter extends ResourceCursorAdapter {
         ImageView image;
         image = (ImageView) view.findViewById(R.id.poster_image_view);
 
-        MovieCursor movieCursor = (MovieCursor) cursor;
+        MovieCursor movieCursor = new MovieCursor(cursor);
         Movie movie = new Movie(movieCursor);
 
         Glide.with(context)

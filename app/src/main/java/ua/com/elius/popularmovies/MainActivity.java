@@ -1,22 +1,28 @@
 package ua.com.elius.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
+import ua.com.elius.popularmovies.data.movie.MovieColumns;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    PosterAdapter mAdapter;
+    PosterAdapter mPosterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +31,23 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        getSupportLoaderManager().initLoader(0, null, this);
+
         MovieSelection where;
         MovieCursor cursor;
         where = new MovieSelection();
+        where.title("Jurassic World");
         cursor = where.query(getContentResolver());
 
-        mAdapter = new PosterAdapter(this, R.layout.poster, cursor, 0);
+        mPosterAdapter = new PosterAdapter(this, R.layout.poster, cursor, 0);
 
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
-        gridview.setAdapter(mAdapter);
+        gridview.setAdapter(mPosterAdapter);
 
 //        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> parent, View v,
 //                                    int position, long id) {
-//                Movie movie = mAdapter.getMovie(position);
+//                Movie movie = mPosterAdapter.getMovie(position);
 //                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
 //                intent.putExtra("id", movie.getId());
 //                intent.putExtra("backdropURL", movie.getBackdropURL());
@@ -92,5 +101,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = new CursorLoader(
+                this,
+                MovieColumns.CONTENT_URI,
+                null, null, null, null
+        );
+
+        return loader;
+    }
+
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mPosterAdapter.swapCursor(cursor);
+    }
+
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        mPosterAdapter.swapCursor(null);
     }
 }
