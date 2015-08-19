@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.elius.popularmovies.data.movie.MovieContentValues;
+import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.review.ReviewContentValues;
 import ua.com.elius.popularmovies.data.video.VideoContentValues;
 
@@ -293,7 +294,7 @@ class Movie {
 
     public Movie(JSONObject json) {
         try {
-            this.mId = json.getInt("id");
+            this.mId           = json.getInt("id");
             this.mPopularity   = json.getDouble("popularity");
             this.mVoteAverage  = json.getDouble("vote_average");
             this.mVoteCount    = json.getInt("vote_count");
@@ -307,6 +308,17 @@ class Movie {
         }
     }
 
+    public Movie(MovieCursor cursor) {
+        this.mId           = (int) cursor.getId();
+        this.mPopularity   = cursor.getPopularity();
+        this.mVoteAverage  = cursor.getVoteAverage();
+        this.mVoteCount    = cursor.getVoteCount();
+        this.mTitle        = cursor.getTitle();
+        this.mOverview     = cursor.getOverview();
+        this.mPosterPath   = cursor.getPosterPath();
+        this.mBackdropPath = cursor.getBackdropPath();
+        this.mReleaseDate  = cursor.getReleaseDate();
+    }
 }
 
 class Movies extends ArrayList<Movie> {

@@ -6,16 +6,17 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
+
+import ua.com.elius.popularmovies.data.movie.MovieCursor;
+import ua.com.elius.popularmovies.data.movie.MovieSelection;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    PosterAdapter<String> mAdapter;
+    PosterAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,31 +25,35 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        mAdapter = new PosterAdapter<>(this, R.layout.poster, R.id.poster_image_view);
+        MovieSelection where;
+        MovieCursor cursor;
+        where = new MovieSelection();
+        cursor = where.query(getContentResolver());
+
+        mAdapter = new PosterAdapter(this, R.layout.poster, cursor, 0);
+
         GridView gridview = (GridView) findViewById(R.id.poster_grid);
         gridview.setAdapter(mAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Movie movie = mAdapter.getMovie(position);
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtra("id", movie.getId());
-                intent.putExtra("backdropURL", movie.getBackdropURL());
-                intent.putExtra("title", movie.getTitle());
-                intent.putExtra("overview", movie.getOverview());
-                intent.putExtra("releaseDate", movie.getReleaseDate());
-                intent.putExtra("rating", String.valueOf(movie.getVoteAverage()));
-                startActivity(intent);
-            }
-        });
+//        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View v,
+//                                    int position, long id) {
+//                Movie movie = mAdapter.getMovie(position);
+//                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+//                intent.putExtra("id", movie.getId());
+//                intent.putExtra("backdropURL", movie.getBackdropURL());
+//                intent.putExtra("title", movie.getTitle());
+//                intent.putExtra("overview", movie.getOverview());
+//                intent.putExtra("releaseDate", movie.getReleaseDate());
+//                intent.putExtra("rating", String.valueOf(movie.getVoteAverage()));
+//                startActivity(intent);
+//            }
+//        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FetchPostersTask fetchPostersTask = new FetchPostersTask(this);
-        fetchPostersTask.execute(mAdapter);
 
         String action;
         String sortBy = PreferenceManager
