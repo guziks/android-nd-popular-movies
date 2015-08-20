@@ -16,7 +16,8 @@ import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
 
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity
+        implements TrailersFragment.OnFragmentInteractionListener {
 
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
@@ -76,6 +77,17 @@ public class DetailActivity extends AppCompatActivity {
 
         startFetch(mTmdbMovieId, FetchService.ACTION_VIDEO);
         startFetch(mTmdbMovieId, FetchService.ACTION_REVIEW);
+
+        TrailersFragment trailersFragment;
+        Bundle args;
+
+        trailersFragment = new TrailersFragment();
+        args = new Bundle();
+        args.putInt(TrailersFragment.ARG_TMDB_MOVIE_ID, (int) cursor.getId());
+        trailersFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.trailers_container, trailersFragment)
+                .commit();
     }
 
     private void startFetch(int tmdbMovieId, String action) {
@@ -120,4 +132,7 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public int getTmdbMovieId() {
+        return mTmdbMovieId;
+    }
 }

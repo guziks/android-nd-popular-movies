@@ -86,14 +86,19 @@
                         tools:text="7.0" />
                 </LinearLayout>
 
-            </LinearLayout>
+                <ImageButton
+                    android:id="@+id/like_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="changeLike"
+                    tools:src="@drawable/ic_favorite_border_black_48dp" />
 
-            <ImageButton
-                android:id="@+id/like_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="changeLike"
-                tools:src="@drawable/ic_favorite_border_black_48dp" />
+                <FrameLayout
+                    android:id="@+id/trailers_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
