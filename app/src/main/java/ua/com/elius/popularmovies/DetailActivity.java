@@ -2,6 +2,7 @@ package ua.com.elius.popularmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -146,8 +147,8 @@ public class DetailActivity extends AppCompatActivity
                 this,
                 VideoColumns.CONTENT_URI,
                 null,
-                "movie_id = ?",
-                new String[]{movieId},
+                "movie_id = ? and site = ?",
+                new String[]{movieId, "YouTube"},
                 null
         );
 
@@ -156,7 +157,7 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        VideoCursor videoCursor = new VideoCursor(cursor);
+        final VideoCursor videoCursor = new VideoCursor(cursor);
         int videoCount = videoCursor.getCount();
         Log.d(LOG_TAG, "Video count = " + videoCount);
 
@@ -167,6 +168,18 @@ public class DetailActivity extends AppCompatActivity
         for (int i = 0; i < videoCount; videoCursor.moveToNext(), i++) {
             Button button = new Button(this);
             button.setText(videoCursor.getName());
+            button.setTag(videoCursor.getKey());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = new Uri.Builder()
+                            .scheme("vnd.youtube")
+                            .authority((String)v.getTag())
+                            .build();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
             layout.addView(button);
         }
     }
