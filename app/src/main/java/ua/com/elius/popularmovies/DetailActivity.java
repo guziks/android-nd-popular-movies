@@ -1,11 +1,16 @@
 package ua.com.elius.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,16 +21,22 @@ import com.bumptech.glide.Glide;
 import ua.com.elius.popularmovies.data.movie.MovieContentValues;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
+import ua.com.elius.popularmovies.data.video.VideoColumns;
+import ua.com.elius.popularmovies.data.video.VideoCursor;
 
 
 public class DetailActivity extends AppCompatActivity
-        implements TrailersFragment.OnFragmentInteractionListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private final int IS_FAVOURITE_ICON = R.drawable.ic_favorite_black_48dp;
     private final int IS_NOT_FAVOURITE_ICON = R.drawable.ic_favorite_border_black_48dp;
 
+    private final int VIDEO_LOADER = 0;
+    private final int REVIEWS_LOADER = 1;
+
+    int mMovieId;
     int mTmdbMovieId;
     boolean mLike;
     MovieSelection mWhere;
@@ -53,6 +64,7 @@ public class DetailActivity extends AppCompatActivity
         movie = new Movie(cursor);
 
         mLike = cursor.getLike();
+        mMovieId = (int) cursor.getId();
 
         ImageView   backdrop    = (ImageView) findViewById(R.id.backdrop);
         TextView    title       = (TextView)  findViewById(R.id.title);
@@ -77,26 +89,10 @@ public class DetailActivity extends AppCompatActivity
         }
         like.setImageResource(likeImage);
 
+        getSupportLoaderManager().initLoader(VIDEO_LOADER, null, this);
+
         startFetch(mTmdbMovieId, FetchService.ACTION_VIDEO);
         startFetch(mTmdbMovieId, FetchService.ACTION_REVIEW);
-
-        TrailersFragment trailersFragment;
-        Bundle args;
-
-        LinearLayout layout = (LinearLayout) findViewById(R.id.detail_content);
-        Log.d(LOG_TAG, layout.getClass().getSimpleName());
-
-        TextView text = new TextView(this);
-        text.setText("Hello activity");
-        layout.addView(text);
-
-        trailersFragment = new TrailersFragment();
-        args = new Bundle();
-        args.putInt(TrailersFragment.ARG_TMDB_MOVIE_ID, (int) cursor.getId());
-        trailersFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.trailers_container, trailersFragment)
-                .commit();
     }
 
     private void startFetch(int tmdbMovieId, String action) {
@@ -141,7 +137,42 @@ public class DetailActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public int getTmdbMovieId() {
-        return mTmdbMovieId;
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String movieId = Integer.toString(mMovieId);
+        CursorLoader loader = null;
+
+        loader = new CursorLoader (
+                this,
+                VideoColumns.CONTENT_URI,
+                null,
+                "movie_id = ?",
+                new String[]{movieId},
+                null
+        );
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        VideoCursor videoCursor = new VideoCursor(cursor);
+        int videoCount = videoCursor.getCount();
+        Log.d(LOG_TAG, "Video count = " + videoCount);
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.trailers_list_container);
+        layout.removeAllViews();
+
+        videoCursor.moveToFirst();
+        for (int i = 0; i < videoCount; videoCursor.moveToNext(), i++) {
+            Button button = new Button(this);
+            button.setText(videoCursor.getName());
+            layout.addView(button);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

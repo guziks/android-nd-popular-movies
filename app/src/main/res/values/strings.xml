@@ -20,9 +20,9 @@
 
     <string name="title_activity_detail">Movie Details</string>
     <string name="backdrop_image_description">Backdrop image</string>
-    <string name="release_date">Release date: </string>
-    <string name="user_rating">User rating: </string>
+    <string name="release_date">"Release date: "</string>
+    <string name="user_rating">"User rating: "</string>
 
-    <string name="trailers_title">Trailers</string>
+    <string name="videos_title">Videos</string>
 
 </resources>
