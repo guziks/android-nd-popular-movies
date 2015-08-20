@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import ua.com.elius.popularmovies.data.video.VideoColumns;
 import ua.com.elius.popularmovies.data.video.VideoCursor;
@@ -63,7 +66,15 @@ public class TrailersFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trailers, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_trailers, container, false);
+
+//        LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.trailers_list_container);
+//
+//        TextView text = new TextView(getActivity());
+//        text.setText("Hello fragment");
+//        layout.addView(text);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -113,6 +124,17 @@ public class TrailersFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         VideoCursor videoCursor = new VideoCursor(cursor);
         Log.d(LOG_TAG, "Count = " + videoCursor.getCount());
+
+        LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.trailers_list_container);
+        Log.d(LOG_TAG, layout.getClass().getSimpleName());
+
+        TextView text = new TextView(getActivity());
+        text.setText("Hello fragment");
+        layout.addView(text);
+
+        Button button = new Button(getActivity());
+        button.setText("Hello fragment");
+        layout.addView(button);
     }
 
     @Override

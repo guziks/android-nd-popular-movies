@@ -3,10 +3,12 @@ package ua.com.elius.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -80,6 +82,13 @@ public class DetailActivity extends AppCompatActivity
 
         TrailersFragment trailersFragment;
         Bundle args;
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.detail_content);
+        Log.d(LOG_TAG, layout.getClass().getSimpleName());
+
+        TextView text = new TextView(this);
+        text.setText("Hello activity");
+        layout.addView(text);
 
         trailersFragment = new TrailersFragment();
         args = new Bundle();
