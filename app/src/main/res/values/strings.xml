@@ -10,10 +10,12 @@
     <string-array name="pref_sort_by_titles">
         <item>Popularity</item>
         <item>Rating</item>
+        <item>Favorites</item>
     </string-array>
     <string-array name="pref_sort_by_values">
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string name="title_activity_detail">Movie Details</string>

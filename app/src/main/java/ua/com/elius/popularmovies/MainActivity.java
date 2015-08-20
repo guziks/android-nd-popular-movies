@@ -113,9 +113,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         String sortColumn;
+        String selection = null;
+        String[] selectionArgs = null;
+        String limit = "LIMIT 20";
         switch (mSortBy) {
             case "2":
                 sortColumn = MovieColumns.VOTE_AVERAGE;
+                break;
+            case "3":
+                sortColumn = MovieColumns.TITLE;
+                selection = "like = ?";
+                selectionArgs = new String[]{"1"};
+                limit = "";
                 break;
             default:
                 sortColumn = MovieColumns.POPULARITY;
@@ -124,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         CursorLoader loader = new CursorLoader(
                 this,
                 MovieColumns.CONTENT_URI,
-                null, null, null, sortColumn + " DESC LIMIT 20"
+                null, selection, selectionArgs, sortColumn + " DESC " + limit
         );
 
         return loader;
