@@ -10,9 +10,13 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity
-        implements PostersFragment.OnFragmentInteractionListener {
+        implements PostersFragment.OnFragmentInteractionListener,
+                   PostersFragment.TmdbMovieIdReceiver,
+                   DetailFragment.TmdbMovieIdProvider  {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private int mTmdbMovieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +52,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void setTmdbMovieId(int id) {
+        mTmdbMovieId = id;
+    }
+
+    @Override
+    public int getTmdbMovieId() {
+        return mTmdbMovieId;
     }
 }

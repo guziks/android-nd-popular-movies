@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 
 public class DetailActivity extends AppCompatActivity
-        implements DetailFragment.TmbdMovieIdHolder {
+        implements DetailFragment.TmdbMovieIdProvider {
 
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 

@@ -48,7 +48,7 @@ public class DetailFragment extends Fragment
     private final int VIDEO_LOADER = 0;
     private final int REVIEW_LOADER = 1;
 
-    private TmbdMovieIdHolder mListener;
+    private TmdbMovieIdProvider mListener;
     private int mMovieId;
     private int mTmdbMovieId;
     private boolean mLike;
@@ -62,7 +62,7 @@ public class DetailFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (TmbdMovieIdHolder) activity;
+            mListener = (TmdbMovieIdProvider) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -274,7 +274,7 @@ public class DetailFragment extends Fragment
 
     }
 
-    public interface TmbdMovieIdHolder {
+    public interface TmdbMovieIdProvider {
         int getTmdbMovieId();
     }
 }

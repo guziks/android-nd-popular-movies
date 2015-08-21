@@ -35,6 +35,7 @@ public class PostersFragment extends Fragment
     private String mSortBy;
 
     private OnFragmentInteractionListener mListener;
+    private TmdbMovieIdReceiver mTmdbMovieIdReceiver;
 
     public PostersFragment() {
         // Required empty public constructor
@@ -65,13 +66,17 @@ public class PostersFragment extends Fragment
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Cursor cursor;
-                MovieCursor moviesCursor;
+                MovieCursor movieCursor;
 
                 cursor = mPosterAdapter.getCursor();
-                moviesCursor = new MovieCursor(cursor);
+                movieCursor = new MovieCursor(cursor);
+
+                if (mTmdbMovieIdReceiver != null) {
+                    mTmdbMovieIdReceiver.setTmdbMovieId(movieCursor.getTmdbMovieId());
+                }
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("id", moviesCursor.getTmdbMovieId());
+                intent.putExtra("id", movieCursor.getTmdbMovieId());
 
                 startActivity(intent);
             }
@@ -95,6 +100,12 @@ public class PostersFragment extends Fragment
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+        try {
+            mTmdbMovieIdReceiver = (TmdbMovieIdReceiver) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement TmdbMovieIdReceiver");
         }
     }
 
@@ -183,4 +194,7 @@ public class PostersFragment extends Fragment
         public void onFragmentInteraction(Uri uri);
     }
 
+    public interface TmdbMovieIdReceiver {
+        void setTmdbMovieId(int id);
+    }
 }
