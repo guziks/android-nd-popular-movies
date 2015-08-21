@@ -114,6 +114,8 @@ public class DetailFragment extends Fragment
         TextView    rating      = (TextView)    activity.findViewById(R.id.rating);
         ImageButton like        = (ImageButton) activity.findViewById(R.id.like_button);
 
+        if (backdrop == null) return; // temporary workaround on activity recreation on up/back
+
         Glide.with(this)
                 .load(movie.getBackdropURL())
                 .into(backdrop);
