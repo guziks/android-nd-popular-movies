@@ -103,7 +103,14 @@
                         android:id="@+id/trailers_list_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_videos" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -122,7 +129,14 @@
                         android:id="@+id/reviews_list_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_reviews" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

@@ -220,6 +220,8 @@ public class DetailFragment extends Fragment
             int videoCount = videoCursor.getCount();
             Log.d(LOG_TAG, "Video count = " + videoCount);
 
+            if (videoCount == 0) return;
+
             LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.trailers_list_container);
             layout.removeAllViews();
 
@@ -257,6 +259,8 @@ public class DetailFragment extends Fragment
             ReviewCursor reviewCursor = new ReviewCursor(cursor);
             int reviewCount = reviewCursor.getCount();
             Log.d(LOG_TAG, "Review count = " + reviewCount);
+
+            if (reviewCount == 0) return;
 
             LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.reviews_list_container);
             layout.removeAllViews();
