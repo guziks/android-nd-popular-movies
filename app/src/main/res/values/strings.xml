@@ -24,5 +24,6 @@
     <string name="user_rating">"User rating: "</string>
 
     <string name="videos_title">Videos</string>
+    <string name="reviews_title">Reviews</string>
 
 </resources>

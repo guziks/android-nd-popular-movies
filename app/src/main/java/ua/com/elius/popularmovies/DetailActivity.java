@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide;
 import ua.com.elius.popularmovies.data.movie.MovieContentValues;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.movie.MovieSelection;
+import ua.com.elius.popularmovies.data.review.ReviewColumns;
+import ua.com.elius.popularmovies.data.review.ReviewCursor;
 import ua.com.elius.popularmovies.data.video.VideoColumns;
 import ua.com.elius.popularmovies.data.video.VideoCursor;
 
@@ -37,7 +39,7 @@ public class DetailActivity extends AppCompatActivity
     private final int IS_NOT_FAVOURITE_ICON = R.drawable.ic_favorite_border_black_48dp;
 
     private final int VIDEO_LOADER = 0;
-    private final int REVIEWS_LOADER = 1;
+    private final int REVIEW_LOADER = 1;
 
     int mMovieId;
     int mTmdbMovieId;
@@ -93,6 +95,7 @@ public class DetailActivity extends AppCompatActivity
         like.setImageResource(likeImage);
 
         getSupportLoaderManager().initLoader(VIDEO_LOADER, null, this);
+        getSupportLoaderManager().initLoader(REVIEW_LOADER, null, this);
 
         startFetch(mTmdbMovieId, FetchService.ACTION_VIDEO);
         startFetch(mTmdbMovieId, FetchService.ACTION_REVIEW);
@@ -145,54 +148,91 @@ public class DetailActivity extends AppCompatActivity
         String movieId = Integer.toString(mMovieId);
         CursorLoader loader = null;
 
-        loader = new CursorLoader (
-                this,
-                VideoColumns.CONTENT_URI,
-                null,
-                "movie_id = ? and site = ?",
-                new String[]{movieId, "YouTube"},
-                null
-        );
+        Log.d(LOG_TAG, "onCreateLoader id = " + id);
+
+        if (id == VIDEO_LOADER) {
+            loader = new CursorLoader (
+                    this,
+                    VideoColumns.CONTENT_URI,
+                    null,
+                    "movie_id = ? and site = ?",
+                    new String[]{movieId, "YouTube"},
+                    null
+            );
+        }
+
+        if (id == REVIEW_LOADER) {
+            loader = new CursorLoader (
+                    this,
+                    ReviewColumns.CONTENT_URI,
+                    null,
+                    "movie_id = ?",
+                    new String[]{movieId},
+                    null
+            );
+        }
 
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        final VideoCursor videoCursor = new VideoCursor(cursor);
-        int videoCount = videoCursor.getCount();
-        Log.d(LOG_TAG, "Video count = " + videoCount);
+        int loaderId = loader.getId();
+        Log.d(LOG_TAG, "onLoadFinished id = " + loaderId);
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.trailers_list_container);
-        layout.removeAllViews();
+        if (loaderId == VIDEO_LOADER) {
+            VideoCursor videoCursor = new VideoCursor(cursor);
+            int videoCount = videoCursor.getCount();
+            Log.d(LOG_TAG, "Video count = " + videoCount);
 
-        videoCursor.moveToFirst();
-        for (int i = 0; i < videoCount; videoCursor.moveToNext(), i++) {
-            Button button = new Button(this);
-            button.setText(videoCursor.getName());
-            button.setTag(videoCursor.getKey());
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri uri = new Uri.Builder()
-                            .scheme("vnd.youtube")
-                            .authority((String)v.getTag())
-                            .build();
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    boolean safeToStart = getPackageManager().queryIntentActivities(intent,
-                            PackageManager.MATCH_DEFAULT_ONLY
-                    ).size() > 0;
-                    if (safeToStart) {
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(DetailActivity.this,
-                                "Unable to play video, you have no YouTube app installed",
-                                Toast.LENGTH_LONG
-                        ).show();
+            LinearLayout layout = (LinearLayout) findViewById(R.id.trailers_list_container);
+            layout.removeAllViews();
+
+            videoCursor.moveToFirst();
+            for (int i = 0; i < videoCount; videoCursor.moveToNext(), i++) {
+                Button button = new Button(this);
+                button.setText(videoCursor.getName());
+                button.setTag(videoCursor.getKey());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri uri = new Uri.Builder()
+                                .scheme("vnd.youtube")
+                                .authority((String)v.getTag())
+                                .build();
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        boolean safeToStart = getPackageManager().queryIntentActivities(intent,
+                                PackageManager.MATCH_DEFAULT_ONLY
+                        ).size() > 0;
+                        if (safeToStart) {
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(DetailActivity.this,
+                                    "Unable to play video, you have no YouTube app installed",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
                     }
-                }
-            });
-            layout.addView(button);
+                });
+                layout.addView(button);
+            }
+        }
+
+        if (loaderId == REVIEW_LOADER) {
+            ReviewCursor reviewCursor = new ReviewCursor(cursor);
+            int reviewCount = reviewCursor.getCount();
+            Log.d(LOG_TAG, "Review count = " + reviewCount);
+
+            LinearLayout layout = (LinearLayout) findViewById(R.id.reviews_list_container);
+            layout.removeAllViews();
+
+            reviewCursor.moveToFirst();
+            for (int i = 0; i < reviewCount; reviewCursor.moveToNext(), i++) {
+                TextView text = new TextView(this);
+                text.setText(reviewCursor.getContent());
+
+                layout.addView(text);
+            }
         }
     }
 
