@@ -37,7 +37,8 @@ import ua.com.elius.popularmovies.data.video.VideoCursor;
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+                   ImageButton.OnClickListener {
 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
 
@@ -72,7 +73,12 @@ public class DetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        ImageButton likeButton = (ImageButton) rootView.findViewById(R.id.like_button);
+        likeButton.setOnClickListener(this);
+
+        return rootView;
     }
 
     @Override
@@ -139,7 +145,16 @@ public class DetailFragment extends Fragment
         getActivity().startService(fetchIntent);
     }
 
-    public void changeLike(View view) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.like_button:
+                swapLike(v);
+                break;
+        }
+    }
+
+    public void swapLike(View view) {
         ImageButton like = (ImageButton) view;
         MovieContentValues values;
         values = new MovieContentValues();
