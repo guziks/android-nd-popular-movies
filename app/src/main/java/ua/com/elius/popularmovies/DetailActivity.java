@@ -1,6 +1,7 @@
 package ua.com.elius.popularmovies;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -177,7 +179,17 @@ public class DetailActivity extends AppCompatActivity
                             .authority((String)v.getTag())
                             .build();
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
+                    boolean safeToStart = getPackageManager().queryIntentActivities(intent,
+                            PackageManager.MATCH_DEFAULT_ONLY
+                    ).size() > 0;
+                    if (safeToStart) {
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(DetailActivity.this,
+                                "Unable to play video, you have no YouTube app installed",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
                 }
             });
             layout.addView(button);
