@@ -37,7 +37,7 @@ import ua.com.elius.popularmovies.data.video.VideoCursor;
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
 
@@ -47,6 +47,7 @@ public class DetailFragment extends Fragment
     private final int VIDEO_LOADER = 0;
     private final int REVIEW_LOADER = 1;
 
+    private TmbdMovieIdHolder mListener;
     private int mMovieId;
     private int mTmdbMovieId;
     private boolean mLike;
@@ -54,6 +55,17 @@ public class DetailFragment extends Fragment
 
     public DetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (TmbdMovieIdHolder) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -67,10 +79,13 @@ public class DetailFragment extends Fragment
     public void onStart() {
         super.onStart();
 
-        Activity activity = getActivity();
+        if (mListener != null) {
+            mTmdbMovieId = mListener.getTmdbMovieId();
+        } else {
+            return;
+        }
 
-        Intent intent = activity.getIntent();
-        mTmdbMovieId = intent.getIntExtra("id", 0);
+        Activity activity = getActivity();
 
         MovieCursor cursor;
         Movie movie;
@@ -138,6 +153,12 @@ public class DetailFragment extends Fragment
             like.setImageResource(IS_FAVOURITE_ICON);
         }
         values.update(getActivity().getContentResolver(), mWhere);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -236,5 +257,9 @@ public class DetailFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public interface TmbdMovieIdHolder {
+        int getTmdbMovieId();
     }
 }
