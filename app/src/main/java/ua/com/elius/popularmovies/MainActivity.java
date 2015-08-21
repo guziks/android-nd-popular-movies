@@ -1,7 +1,6 @@
 package ua.com.elius.popularmovies;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,8 +9,7 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity
-        implements PostersFragment.OnFragmentInteractionListener,
-                   PostersFragment.TmdbMovieIdReceiver,
+        implements PostersFragment.TmdbMovieIdReceiver,
                    DetailFragment.TmdbMovieIdProvider  {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -50,11 +48,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override
