@@ -74,11 +74,6 @@ public class PostersFragment extends Fragment
                 if (mTmdbMovieIdReceiver != null) {
                     mTmdbMovieIdReceiver.setTmdbMovieId(movieCursor.getTmdbMovieId());
                 }
-
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("id", movieCursor.getTmdbMovieId());
-
-                startActivity(intent);
             }
         });
 

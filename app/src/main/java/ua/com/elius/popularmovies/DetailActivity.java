@@ -27,6 +27,7 @@ public class DetailActivity extends AppCompatActivity
                 up.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 up.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(up);
+//                super.onBackPressed();
                 return true;
         }
 

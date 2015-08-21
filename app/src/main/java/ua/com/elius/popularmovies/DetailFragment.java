@@ -48,7 +48,7 @@ public class DetailFragment extends Fragment
     private final int VIDEO_LOADER = 0;
     private final int REVIEW_LOADER = 1;
 
-    private TmdbMovieIdProvider mListener;
+    private TmdbMovieIdProvider mTmdbMovieIdProvider;
     private int mMovieId;
     private int mTmdbMovieId;
     private boolean mLike;
@@ -62,10 +62,10 @@ public class DetailFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (TmdbMovieIdProvider) activity;
+            mTmdbMovieIdProvider = (TmdbMovieIdProvider) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement TmdbMovieIdProvider");
         }
     }
 
@@ -83,13 +83,15 @@ public class DetailFragment extends Fragment
 
     @Override
     public void onStart() {
+        Log.d(LOG_TAG, "onStart");
         super.onStart();
 
-        if (mListener != null) {
-            mTmdbMovieId = mListener.getTmdbMovieId();
+        if (mTmdbMovieIdProvider != null) {
+            mTmdbMovieId = mTmdbMovieIdProvider.getTmdbMovieId();
         } else {
             return;
         }
+        if (mTmdbMovieId == 0) return;
 
         Activity activity = getActivity();
 
@@ -173,7 +175,7 @@ public class DetailFragment extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mTmdbMovieIdProvider = null;
     }
 
     @Override
