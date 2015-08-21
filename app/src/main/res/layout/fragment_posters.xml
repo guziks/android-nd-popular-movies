@@ -1,0 +1,18 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ua.com.elius.popularmovies.PostersFragment">
+
+    <GridView
+        android:id="@+id/poster_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/poster_width"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="@dimen/poster_grid_vertical_spacing"
+        android:horizontalSpacing="@dimen/poster_grid_horizontal_spacing"
+        android:stretchMode="columnWidth"
+        android:gravity="center" />
+
+</FrameLayout>
