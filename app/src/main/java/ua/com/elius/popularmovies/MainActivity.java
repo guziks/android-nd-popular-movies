@@ -8,14 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends AppCompatActivity
-        implements PostersFragment.TmdbMovieIdReceiver,
-                   DetailFragment.TmdbMovieIdProvider  {
+public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-
-    private int mTmdbMovieId;
-    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +18,6 @@ public class MainActivity extends AppCompatActivity
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
 
         setContentView(R.layout.activity_main);
-
-        if (findViewById(R.id.fragment_detail_container) != null) mTwoPane = true;
     }
 
     @Override
@@ -48,25 +41,5 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void setTmdbMovieId(int id) {
-        mTmdbMovieId = id;
-        if (mTwoPane) {
-            DetailFragment detailFragment = new DetailFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_detail_container, detailFragment)
-                    .commit();
-        } else {
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra("id", mTmdbMovieId);
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public int getTmdbMovieId() {
-        return mTmdbMovieId;
     }
 }

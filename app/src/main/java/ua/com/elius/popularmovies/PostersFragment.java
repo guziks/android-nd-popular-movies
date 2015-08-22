@@ -20,29 +20,34 @@ import ua.com.elius.popularmovies.data.movie.MovieCursor;
 
 
 public class PostersFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+                   GridView.OnItemClickListener {
 
     private final String LOG_TAG = PostersFragment.class.getSimpleName();
 
+    private static final int MOVIE_LOADER = 0;
+
+    public static final String KEY_SELECTED_TMDB_MOVIE_ID = "selectedTmdbMovieId";
+
     private PosterAdapter mPosterAdapter;
     private String mSortBy;
-
-    private TmdbMovieIdReceiver mTmdbMovieIdReceiver;
+    private boolean mTwoPane;
+    private int mSelectedTmdbMovieId;
 
     public PostersFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         mSortBy = PreferenceManager
                 .getDefaultSharedPreferences(getActivity()).getString(SettingsActivity.KEY_PREF_SORT_BY, "");
 
         mPosterAdapter = new PosterAdapter(getActivity(), R.layout.poster, null, 0);
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
     }
 
     @Override
@@ -54,33 +59,71 @@ public class PostersFragment extends Fragment
         GridView gridview = (GridView) rootView.findViewById(R.id.poster_grid);
         gridview.setAdapter(mPosterAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Cursor cursor;
-                MovieCursor movieCursor;
-
-                cursor = mPosterAdapter.getCursor();
-                movieCursor = new MovieCursor(cursor);
-
-                if (mTmdbMovieIdReceiver != null) {
-                    mTmdbMovieIdReceiver.setTmdbMovieId(movieCursor.getTmdbMovieId());
-                }
-            }
-        });
+        gridview.setOnItemClickListener(this);
 
         return rootView;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mTmdbMovieIdReceiver = (TmdbMovieIdReceiver) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement TmdbMovieIdReceiver");
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        View detailContainer = getActivity().findViewById(R.id.fragment_detail_container);
+        mTwoPane = detailContainer != null;
+
+        if (savedInstanceState != null) {
+            mSelectedTmdbMovieId = savedInstanceState.getInt(KEY_SELECTED_TMDB_MOVIE_ID, 0);
         }
+
+        if (mTwoPane) {
+            showDetails(mSelectedTmdbMovieId);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SELECTED_TMDB_MOVIE_ID, mSelectedTmdbMovieId);
+    }
+
+    void showDetails(int id) {
+        if (id == 0) return;
+
+        mSelectedTmdbMovieId = id;
+
+        if (mTwoPane) {
+            // Check what fragment is currently shown, replace if needed.
+            DetailFragment details = (DetailFragment)
+                    getFragmentManager().findFragmentById(R.id.fragment_detail_container);
+            if (details == null || details.getShownTmdbMovieId() != id) {
+                // Make new fragment to show this selection.
+                details = DetailFragment.newInstance(id);
+
+                // Execute a transaction, replacing any existing fragment
+                // with this one inside the frame.
+                getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_detail_container, details)
+                    .commitAllowingStateLoss();
+            }
+
+        } else {
+            // Otherwise we need to launch a new activity to display
+            // the dialog fragment with selected text.
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            intent.putExtra(DetailFragment.KEY_TMDB_MOVIE_ID, id);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Cursor cursor;
+        MovieCursor movieCursor;
+
+        cursor = mPosterAdapter.getCursor();
+        movieCursor = new MovieCursor(cursor);
+
+        showDetails(movieCursor.getTmdbMovieId());
     }
 
     @Override
@@ -108,12 +151,6 @@ public class PostersFragment extends Fragment
         Intent fetchIntent = new Intent(getActivity(), FetchService.class);
         fetchIntent.setAction(action);
         getActivity().startService(fetchIntent);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mTmdbMovieIdReceiver = null;
     }
 
     @Override
@@ -147,13 +184,15 @@ public class PostersFragment extends Fragment
 
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mPosterAdapter.swapCursor(cursor);
+        if (mSelectedTmdbMovieId == 0 && mTwoPane) {
+            MovieCursor movieCursor = new MovieCursor(cursor);
+            movieCursor.moveToFirst();
+            mSelectedTmdbMovieId = movieCursor.getTmdbMovieId();
+            showDetails(mSelectedTmdbMovieId);
+        }
     }
 
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mPosterAdapter.swapCursor(null);
-    }
-
-    public interface TmdbMovieIdReceiver {
-        void setTmdbMovieId(int id);
     }
 }

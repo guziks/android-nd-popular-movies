@@ -42,36 +42,42 @@ public class DetailFragment extends Fragment
 
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
 
+    public static final String KEY_TMDB_MOVIE_ID = "tmdbMovieId";
+
     private final int IS_FAVOURITE_ICON = R.drawable.ic_favorite_black_48dp;
     private final int IS_NOT_FAVOURITE_ICON = R.drawable.ic_favorite_border_black_48dp;
 
     private final int VIDEO_LOADER = 0;
     private final int REVIEW_LOADER = 1;
 
-    private TmdbMovieIdProvider mTmdbMovieIdProvider;
     private int mMovieId;
-    private int mTmdbMovieId;
     private boolean mLike;
     private MovieSelection mWhere;
+
+    public static DetailFragment newInstance(int id) {
+        DetailFragment f = new DetailFragment();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putInt(KEY_TMDB_MOVIE_ID, id);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    public int getShownTmdbMovieId() {
+        return getArguments().getInt(KEY_TMDB_MOVIE_ID, 0);
+    }
 
     public DetailFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mTmdbMovieIdProvider = (TmdbMovieIdProvider) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement TmdbMovieIdProvider");
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (container == null) return null;
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
@@ -83,15 +89,9 @@ public class DetailFragment extends Fragment
 
     @Override
     public void onStart() {
-        Log.d(LOG_TAG, "onStart");
         super.onStart();
 
-        if (mTmdbMovieIdProvider != null) {
-            mTmdbMovieId = mTmdbMovieIdProvider.getTmdbMovieId();
-        } else {
-            return;
-        }
-        if (mTmdbMovieId == 0) return;
+        int tmdbMovieId = getArguments().getInt(KEY_TMDB_MOVIE_ID, 0);
 
         Activity activity = getActivity();
 
@@ -99,7 +99,7 @@ public class DetailFragment extends Fragment
         Movie movie;
 
         mWhere = new MovieSelection();
-        mWhere.tmdbMovieId(mTmdbMovieId);
+        mWhere.tmdbMovieId(tmdbMovieId);
         cursor = mWhere.query(activity.getContentResolver());
         cursor.moveToFirst();
         movie = new Movie(cursor);
@@ -114,7 +114,7 @@ public class DetailFragment extends Fragment
         TextView    rating      = (TextView)    activity.findViewById(R.id.rating);
         ImageButton like        = (ImageButton) activity.findViewById(R.id.like_button);
 
-        if (backdrop == null) return; // temporary workaround on activity recreation on up/back
+        if (backdrop == null) return; // workaround on activity recreation on up/back
 
         Glide.with(this)
                 .load(movie.getBackdropURL())
@@ -135,8 +135,8 @@ public class DetailFragment extends Fragment
         getLoaderManager().initLoader(VIDEO_LOADER, null, this);
         getLoaderManager().initLoader(REVIEW_LOADER, null, this);
 
-        startFetch(mTmdbMovieId, FetchService.ACTION_VIDEO);
-        startFetch(mTmdbMovieId, FetchService.ACTION_REVIEW);
+        startFetch(tmdbMovieId, FetchService.ACTION_VIDEO);
+        startFetch(tmdbMovieId, FetchService.ACTION_REVIEW);
     }
 
     private void startFetch(int tmdbMovieId, String action) {
@@ -172,12 +172,6 @@ public class DetailFragment extends Fragment
             like.setImageResource(IS_FAVOURITE_ICON);
         }
         values.update(getActivity().getContentResolver(), mWhere);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mTmdbMovieIdProvider = null;
     }
 
     @Override
@@ -280,9 +274,5 @@ public class DetailFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-    }
-
-    public interface TmdbMovieIdProvider {
-        int getTmdbMovieId();
     }
 }
