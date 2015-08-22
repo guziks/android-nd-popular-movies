@@ -19,6 +19,7 @@ import ua.com.elius.popularmovies.data.movie.MovieContentValues;
 import ua.com.elius.popularmovies.data.movie.MovieCursor;
 import ua.com.elius.popularmovies.data.review.ReviewContentValues;
 import ua.com.elius.popularmovies.data.video.VideoContentValues;
+import ua.com.elius.popularmovies.data.video.VideoCursor;
 
 public class TMDB {
 
@@ -343,27 +344,27 @@ class Video {
     String mTmdbVideoId;
     String mType;
 
-    public int getmSize() {
+    public int getSize() {
         return mSize;
     }
 
-    public String getmKey() {
+    public String getKey() {
         return mKey;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public String getmSite() {
+    public String getSite() {
         return mSite;
     }
 
-    public String getmTmdbVideoId() {
+    public String getTmdbVideoId() {
         return mTmdbVideoId;
     }
 
-    public String getmType() {
+    public String getType() {
         return mType;
     }
 
@@ -379,6 +380,20 @@ class Video {
         return values;
     }
 
+    public String getYoutubeUrl() {
+        String url;
+
+        url = new Uri.Builder()
+                .scheme("https")
+                .authority("www.youtube.com")
+                .appendPath("watch")
+                .appendQueryParameter("v", getKey())
+                .build()
+                .toString();
+
+        return url;
+    }
+
     public Video(JSONObject json) {
         try {
             this.mSize        = json.getInt("size");
@@ -391,6 +406,15 @@ class Video {
             e.printStackTrace();
         }
     }
+
+    public Video(VideoCursor cursor) {
+        this.mSize        = cursor.getSize();
+        this.mKey         = cursor.getKey();
+        this.mName        = cursor.getName();
+        this.mSite        = cursor.getSite();
+        this.mTmdbVideoId = cursor.getTmdbVideoId();
+        this.mType        = cursor.getType();
+    }
 }
 
 class Videos extends ArrayList<Video> {}
@@ -401,19 +425,19 @@ class Review {
     String mTmdbReviewId;
     String mUrl;
 
-    public String getmAuthor() {
+    public String getAuthor() {
         return mAuthor;
     }
 
-    public String getmContent() {
+    public String getContent() {
         return mContent;
     }
 
-    public String getmTmdbReviewId() {
+    public String getTmdbReviewId() {
         return mTmdbReviewId;
     }
 
-    public String getmUrl() {
+    public String getUrl() {
         return mUrl;
     }
 

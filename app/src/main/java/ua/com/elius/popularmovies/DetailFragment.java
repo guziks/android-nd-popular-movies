@@ -11,8 +11,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -53,6 +58,7 @@ public class DetailFragment extends Fragment
     private int mMovieId;
     private boolean mLike;
     private MovieSelection mWhere;
+    private ShareActionProvider mShareActionProvider;
 
     public static DetailFragment newInstance(int id) {
         DetailFragment f = new DetailFragment();
@@ -71,6 +77,12 @@ public class DetailFragment extends Fragment
 
     public DetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -175,6 +187,22 @@ public class DetailFragment extends Fragment
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.menu_details, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+    }
+
+    private void setShareIntent(Intent shareIntent) {
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String movieId = Integer.toString(mMovieId);
         CursorLoader loader = null;
@@ -222,6 +250,13 @@ public class DetailFragment extends Fragment
             layout.removeAllViews();
 
             videoCursor.moveToFirst();
+            if (mShareActionProvider != null) {
+                Intent share = new Intent();
+                share.setAction(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, new Video(videoCursor).getYoutubeUrl());
+                setShareIntent(share);
+            }
             for (int i = 0; i < videoCount; videoCursor.moveToNext(), i++) {
                 Button button = new Button(getActivity());
                 button.setText(videoCursor.getName());

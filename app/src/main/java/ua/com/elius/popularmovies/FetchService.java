@@ -129,7 +129,7 @@ public class FetchService extends IntentService {
             values = video.getValues();
             whereVideo = new VideoSelection();
             // select this video in video table
-            whereVideo.tmdbVideoId(video.getmTmdbVideoId());
+            whereVideo.tmdbVideoId(video.getTmdbVideoId());
             VideoCursor = whereVideo.query(getContentResolver());
             if (VideoCursor.getCount() == 1) {
                 values.update(getContentResolver(), whereVideo);
@@ -156,7 +156,7 @@ public class FetchService extends IntentService {
             values = review.getValues();
             whereReview = new ReviewSelection();
             // select this review in review table
-            whereReview.tmdbReviewId(review.getmTmdbReviewId());
+            whereReview.tmdbReviewId(review.getTmdbReviewId());
             ReviewCursor = whereReview.query(getContentResolver());
             if (ReviewCursor.getCount() == 1) {
                 values.update(getContentResolver(), whereReview);
