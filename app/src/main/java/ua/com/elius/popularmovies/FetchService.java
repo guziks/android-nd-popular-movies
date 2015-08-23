@@ -1,7 +1,10 @@
 package ua.com.elius.popularmovies;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+
+import java.util.Date;
 
 import ua.com.elius.popularmovies.data.listpopular.ListPopularContentValues;
 import ua.com.elius.popularmovies.data.listpopular.ListPopularSelection;
@@ -20,11 +23,14 @@ public class FetchService extends IntentService {
 
     private final String LOG_TAG = FetchService.class.getSimpleName();
 
+    private final long DATA_RELEVANCE_DURATION = 1800000; // 30 minutes;
+
     public static final String EXTRA_TMDB_MOVIE_ID = "intent.extra.TMDB_MOVIE_ID";
-    public static final String ACTION_POPULAR = "intent.action.POPULAR";
-    public static final String ACTION_TOP_RATED = "intent.action.TOP_RATED";
-    public static final String ACTION_REVIEW = "intent.action.REVIEW";
-    public static final String ACTION_VIDEO = "intent.action.VIDEO";
+    public static final String ACTION_POPULAR = "action.POPULAR";
+    public static final String ACTION_TOP_RATED = "action.TOP_RATED";
+    public static final String ACTION_REVIEW = "action.REVIEW";
+    public static final String ACTION_VIDEO = "action.VIDEO";
+    public static final String FILE_TIMESTAMPS = "ua.com.elius.popularmovies.fetch_timestamps";
 
     public FetchService() {
         super("FetchService");
@@ -49,11 +55,15 @@ public class FetchService extends IntentService {
         } else {
             switch (action) {
                 case ACTION_POPULAR:
+                    if (!isFetchRequired(action)) break;
+                    saveTimeStamp(action);
                     movies = api.getPopularMovies();
                     saveMovies(movies);
                     saveListOfPopular(movies);
                     break;
                 case ACTION_TOP_RATED:
+                    if (!isFetchRequired(action)) break;
+                    saveTimeStamp(action);
                     movies = api.getTopRatedMovies();
                     saveMovies(movies);
                     saveListOfTopRated(movies);
@@ -70,6 +80,24 @@ public class FetchService extends IntentService {
                     break;
             }
         }
+    }
+
+    private boolean isFetchRequired(String action) {
+        boolean required = true;
+
+        long latestStamp = getSharedPreferences(FILE_TIMESTAMPS, Context.MODE_PRIVATE)
+                .getLong(action, 0);
+        long currentStamp = new Date().getTime();
+        if (currentStamp - latestStamp < DATA_RELEVANCE_DURATION) required = false;
+
+        return required;
+    }
+
+    private void saveTimeStamp(String action) {
+        getSharedPreferences(FILE_TIMESTAMPS, Context.MODE_PRIVATE)
+                .edit()
+                .putLong(action, new Date().getTime())
+                .commit();
     }
 
     private void saveMovies(Movies movies) {

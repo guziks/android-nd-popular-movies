@@ -33,8 +33,6 @@ public class PostersFragment extends Fragment
     private String mSortBy;
     private boolean mTwoPane;
     private int mSelectedTmdbMovieId;
-    private boolean mPopularMoviesFetched;
-    private boolean mTopRatedMoviesFetched;
 
     public PostersFragment() {
         // Required empty public constructor
@@ -151,38 +149,9 @@ public class PostersFragment extends Fragment
                 break;
         }
 
-        if (isFetchRequired(action)) {
-            Intent fetchIntent = new Intent(getActivity(), FetchService.class);
-            fetchIntent.setAction(action);
-            getActivity().startService(fetchIntent);
-            setFetched(action);
-        }
-    }
-
-    private boolean isFetchRequired(String action) {
-        boolean required;
-        switch (action) {
-            case FetchService.ACTION_POPULAR:
-                required = !mPopularMoviesFetched;
-                break;
-            case FetchService.ACTION_TOP_RATED:
-                required = !mTopRatedMoviesFetched;
-                break;
-            default:
-                required = true;
-        }
-        return required;
-    }
-
-    private void setFetched(String action) {
-        switch (action) {
-            case FetchService.ACTION_POPULAR:
-                mPopularMoviesFetched = true;
-                break;
-            case FetchService.ACTION_TOP_RATED:
-                mTopRatedMoviesFetched = true;
-                break;
-        }
+        Intent fetchIntent = new Intent(getActivity(), FetchService.class);
+        fetchIntent.setAction(action);
+        getActivity().startService(fetchIntent);
     }
 
     @Override
