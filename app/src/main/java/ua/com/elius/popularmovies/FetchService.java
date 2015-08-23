@@ -59,13 +59,11 @@ public class FetchService extends IntentService {
                     saveListOfTopRated(movies);
                     break;
                 case ACTION_REVIEW:
-//                  TODO review fetching
                     tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
                     reviews = api.getReviews(tmdbMovieId);
                     saveReviews(reviews, tmdbMovieId);
                     break;
                 case ACTION_VIDEO:
-//                  TODO video fetching
                     tmdbMovieId = intent.getIntExtra(EXTRA_TMDB_MOVIE_ID, 0);
                     videos = api.getVideos(tmdbMovieId);
                     saveVideos(videos, tmdbMovieId);
