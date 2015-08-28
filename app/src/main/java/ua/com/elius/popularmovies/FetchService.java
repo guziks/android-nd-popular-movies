@@ -42,7 +42,7 @@ public class FetchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        TMDB api = new TMDB(TMDB.API_KEY);
+        TMDB api = new TMDB();
         Movies movies;
         int tmdbMovieId;
         Videos videos;

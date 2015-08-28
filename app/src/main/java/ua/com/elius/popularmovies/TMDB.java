@@ -25,7 +25,7 @@ public class TMDB {
 
     private final String LOG_TAG = TMDB.class.getSimpleName();
 
-    public static final String API_KEY = "***REMOVED***";
+    public static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
 
     public static final String SCHEME = "https";
     public static final String API_AUTHORITY = "api.themoviedb.org";
@@ -41,6 +41,10 @@ public class TMDB {
     public static final String BACKDROP_WIDTH = "w780";
 
     private String mApiKey;
+
+    public TMDB() {
+        mApiKey = API_KEY;
+    }
 
     public TMDB(String apiKey) {
         mApiKey = apiKey;

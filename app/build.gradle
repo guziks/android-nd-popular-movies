@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def THE_MOVIE_DB_API_KEY = '"' + TheMovieDBAPIKey + '"' ?: '"Missing The Movie DB API Key"';
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -12,6 +14,9 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        all {
+            buildConfigField 'String', 'THE_MOVIE_DB_API_KEY', THE_MOVIE_DB_API_KEY
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
